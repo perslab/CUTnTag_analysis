@@ -1,0 +1,33 @@
+name: cutNtag
+channels:
+ - bioconda
+ - conda-forge
+dependencies:
+ - python>=3.7
+ - snakemake
+ - samtools
+ - macs2
+ - seacr
+ - pip
+ - bioconda::bedtools
+ - bioconda::bamtools
+ - bioconda::deeptools
+ - r-rmarkdown
+ - r-tidyverse
+ - r-Seurat
+ - r-Signac
+ - r-ggplot2
+ - r-patchwork
+ - bioconductor-genomeinfodb
+ - bioconductor-genomicranges
+ - bioconductor-txdb.mmusculus.ucsc.mm10.knowngene
+ - bioconductor-txdb.hsapiens.ucsc.hg38.knowngene
+ - bioconductor-org.mm.eg.db
+ - bioconductor-org.hs.eg.db
+ - bioconductor-chipseeker
+ - bioconductor-bsgenome.Mmusculus.ucsc.mm10
+# - bioconductor-ensdb.hsapiens.v86
+# - bioconductor-ensdb.mmusculus.v79
+ - r-writexls
+ - pip:
+   - sinto>=0.7.2.2

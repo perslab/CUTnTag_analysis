@@ -1,0 +1,298 @@
+---
+title: "05_Bin5000_Processing"
+output: html_document
+
+---
+
+```{r setup, include=T, cache=F}
+library(rmarkdown)
+library(tidyverse)
+library(Seurat)
+library(Signac)
+library(ggplot2)
+library(GenomeInfoDb)
+library(patchwork)
+set.seed(1234)
+
+source(file = ("00_parameters.R"))
+
+library(future)
+options(future.globals.maxSize = 50 * 1024 ^ 3,future.seed=TRUE) # for 50 Gb RAM
+plan("multisession", workers = nproc)
+#plan("sequential") #for Rstudio
+
+
+```
+
+
+```{r, cache=T}
+source(file = paste0(projPath,"/00_Rfunctions.R"))
+
+metadata<-readRDS(paste0(projPath,"/", ExptName, "_metadataObject.RDS"))
+
+fragments <- CreateFragmentObject(
+  path = paste0(outsPath, "/fragments.tsv.gz"),
+  cells=metadata %>% filter(is__cell_barcode==1) %>% pull(barcode),
+  validate.fragments = FALSE
+)
+
+
+### Add GenomeBinMatrix
+#add new counts based on bins:
+
+bin_matrix <- GenomeBinMatrix(
+  fragments = fragments,
+  genome = GenomeSeqlengths,
+  binsize = 5000,
+  cells=metadata %>% filter(is__cell_barcode==1) %>% pull(barcode)
+)
+
+dim(bin_matrix)
+bin_matrix<-bin_matrix[which(rowSums(bin_matrix)>10),] #doesn't work in the createSeuratObject?
+dim(bin_matrix)
+
+bin_matrixAssay<- CreateChromatinAssay(
+  counts = bin_matrix,
+  sep = c(":", "-"),
+  fragments = paste0(outsPath, "/fragments.tsv.gz"),
+  genome = genome
+)
+
+signac <- CreateSeuratObject(
+  counts = bin_matrixAssay,
+  assay = "bin5000",
+  min.cells = 1
+)
+
+signac<-AddMetaData(signac, metadata %>% column_to_rownames("barcode"))
+```
+
+
+### Annotate, calc gene activities and save RDS object:
+```{r}
+
+Annotation(signac) <- annotations
+
+signac<-NucleosomeSignal(signac)
+
+
+gene.activities <- GeneActivity(signac)
+
+# add the gene activity matrix to the Seurat object as a new assay and normalize it
+signac[['RNA']] <- CreateAssayObject(counts = gene.activities)
+
+signac <- NormalizeData(
+   object = signac,
+   assay = 'RNA',
+   normalization.method = 'LogNormalize',
+   scale.factor = median(signac$nCount_RNA)
+ )
+
+saveRDS(signac, paste0(projPath,"/H3K27ac_Bin5000_SingletsObjectNoAdditionalFiltering.RDS"))
+signac
+```
+
+
+## Additional filtering:
+```{r }
+VlnPlot(signac, c("nucleosome_signal", "nFeature_bin5000"), log=T)
+
+signac<-
+  subset(signac, subset= 
+           nucleosome_signal < 3 &
+          passed_filters > 10^cutoff_reads_min &  
+     enhancer_region_ratio > cutoff_enhancer_ratio &
+     passed_filters < 10^cutoff_reads_max
+)
+signac
+
+saveRDS(signac, paste0(projPath,"/H3K27ac_Bin5000_SingletsObject.RDS"))
+```
+
+# Dimensionality reduction
+
+## Find top features from bins-> TF-IDF, SVD, UMAP
+```{r }
+DefaultAssay(signac) <- 'bin5000'
+
+signac <- FindTopFeatures(signac, min.cutoff = "q5",verbose = T)
+#readRDS atac to get top features.
+signac
+
+signac <- RunTFIDF(signac)
+signac <- RunSVD(signac,
+               assay = 'bin5000',
+               reduction.key = 'LSIbin_',
+               reduction.name = 'lsi_')
+
+DepthCor(signac, reduction = "lsi_",n = ndim)
+```
+
+## RunUMAP
+Excluding dimension #1 since it correlates with seq depth.
+```{r}
+ # signac <- RunUMAP(signac, reduction = 'lsi_', dims = 2:30, reduction.name = 'lsi_umap', n.start=1000,spread=0.5, min_dist=0.001, n.neighbors = 30)
+
+signac <- RunUMAP(signac, reduction = 'lsi_', dims =c(2:ndim), reduction.name = 'lsi_umap')
+
+
+DimPlot(signac, reduction = 'lsi_umap', cols=c("polychrome"), label =T) +
+  NoLegend() +
+  ggtitle("LSIbin_UMAP")
+# ggsave("dimPlot_bin_lsi.png")
+
+
+FeaturePlot(signac, features=c("nCount_bin5000"),reduction = "lsi_umap" )
+FeaturePlot(signac, features=c("nFeature_bin5000"),reduction = "lsi_umap" )
+FeaturePlot(signac, features=c("passed_filters"),reduction = "lsi_umap" )
+
+
+#ggsave("dimPlot_bin_lsi_TSS.percentile.png")
+```
+
+```{r}
+DefaultAssay(signac) <- 'bin5000'
+
+signac <- FindNeighbors(object = signac, reduction = 'lsi_', dims =c(2:ndim), force.recalc = T)
+signac <- FindClusters(object = signac, verbose = FALSE, algorithm = 3, resolution=0.4)
+ 
+table(signac@meta.data$seurat_clusters)
+
+p_clusters<-DimPlot(signac, reduction = 'lsi_umap', label =T, label.box = T, repel = T) +ggtitle("Clusters based on LSI bin5000")+NoLegend()
+p_clusters
+
+# p_dimplotSamples<-DimPlot(signac, reduction = 'lsi_umap', group.by="hash.ID", label =F, label.box = F, repel = T) +ggtitle("Samples based on LSI bin5000")
+# p_dimplotSamples
+```
+
+
+```{r, fig.width=12, fig.height=12}
+VlnPlot(signac,
+            features = c("nCount_bin5000",
+                         "nFeature_bin5000",
+                         "nCount_HTO",
+                         "passed_filters",
+                        #"mitochondrial",
+                         "enhancer_region_ratio",
+                         "nCount_RNA",
+                         "nFeature_RNA", 
+                      #   "HTO_margin",
+                         "blacklist_region_fragments", 
+                      "nucleosome_signal"
+                         )#, split.by = "is_cellranger_cell_barcode"
+)
+  
+
+table(signac$seurat_clusters, signac$is_cellranger_cell_barcode)
+  
+```
+
+
+## Make new bam-file for with only called cells
+### R script to print filtered_cell_barcodes
+```{r}
+cells<-
+  signac@meta.data %>% 
+  #as_tibble() %>%
+  rownames_to_column("barcode") %>%
+    filter(is__cell_barcode=="1") %>% 
+  dplyr::select(barcode, seurat_clusters)
+
+cells$seurat_clusters<-paste0("BinCluster",cells$seurat_clusters)
+
+write_tsv(x = cells, file=paste0(projPath,"/bam/FilteredCellBarcodes_BinClusters.tsv"), col_names = FALSE)
+```
+
+
+### Save RDS object:
+```{r}
+saveRDS(signac, "H3K27ac_BinClusteredObject.RDS")
+```
+
+
+```{r, fig.height=10, fig.width=8}
+markers<-
+  c(
+"Agrp", "Npy", "Sst",
+"Pomc", 
+"Meis2", "Tbr1", "Zfhx4", 
+"Nr5a1", "Ghrh", "Otp", "Oxt",
+"Cck", "Ebf3",
+ "Slc32a1", "Slc17a6",
+"Gfap", 
+"Satb2"
+  )
+
+
+DefaultAssay(signac) <- 'RNA'
+
+p_markers<-FeaturePlot(
+  object = signac,
+  features = c(markers, "nCount_bin5000"),
+  pt.size = 0.1,
+  max.cutoff = 'q90',
+  ncol = floor(length(markers)/5)
+) & NoLegend() & NoAxes()
+
+p_markers
+
+p_vln_markers<-VlnPlot(signac, features=markers, group.by="seurat_clusters")
+p_vln_markers
+```
+
+
+
+
+```{r, eval=F}
+DefaultAssay(signac) <- 'bin5000'
+
+da_bins <- FindAllMarkers(
+  object = signac, 
+  min.diff.pct = 0.1,
+  logfc.threshold = 0.1,
+  test.use = 'LR'
+)
+
+da_binsGR <- makeGRangesFromDataFrame(separate(da_bins, col=gene, sep="-",  c("Chr", "Start", "End")))
+elementMetadata(da_binsGR)<-da_bins
+
+
+blacklist.df = read_tsv(file=blacklist_file ,col_names = F) 
+
+blacklist.gr=GenomicRanges::GRanges(seqnames=blacklist.df$X1,
+               ranges=IRanges(start=as.numeric(blacklist.df$X2),
+                              end=as.numeric(blacklist.df$X3)))
+simpleGR_diff<-GenomicRanges::setdiff(da_binsGR, blacklist.gr, ignore.strand=TRUE)
+
+da_binsGR_white<-subsetByOverlaps(da_binsGR,simpleGR_diff, ignore.strand=TRUE)
+
+filtered_DAbins.df<- 
+  da_binsGR_white@elementMetadata %>% 
+  as_tibble() %>% 
+  filter(p_val_adj<0.1 & avg_logFC>0.25 |p_val_adj<0.1 &  -0.25>avg_logFC) %>% 
+  distinct(gene, .keep_all=T) %>%
+  group_by(cluster) %>% 
+  arrange(avg_logFC) %>%
+  dplyr::select(gene, cluster, avg_logFC,p_val_adj, everything())
+
+ 
+########
+
+closest <- ClosestFeature(signac,
+  regions = filtered_DAbins.df$gene,
+  )
+  
+filtered_DAbins.df<-left_join(filtered_DAbins.df, closest, by=c("gene"= "query_region"))
+
+#write DA bins to excel file
+writexl::write_xlsx(filtered_DAbins.df, path = "DiffAcetylatedBINS_FindAll.xlsx", col_names = TRUE)
+```
+
+
+## go to chapter 06.
+
+
+```{r}
+sessionInfo()
+
+```
