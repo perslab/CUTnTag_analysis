@@ -9,3 +9,8 @@ This folder contains the "mother" scripts, which have then been copied to the an
 Note that in current state it's necessary to set the path to ie. fastq and hashtag fastq in both 00_parameters and in each bash script.
 
 
+`cutntag.yml` contains conda environment with all the necessary packages.
+
+I found it useful to invoke the scripts in this manner:
+`R -e "rmarkdown::render('03_demultiplex.Rmd',output_file='03_demultiplex.html')"`
+`bash -x 04_filteredCells_makeBAMmakeBWfindPeaks.sh &> logfile_04.log`
