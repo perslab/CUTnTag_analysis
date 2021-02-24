@@ -1,3 +1,6 @@
 [submodule "hg38_anno"]
 	path = hg38_anno
 	url = git@github.com:kristianlichtenberg/hg38_anno.git
+[submodule "mm10_anno"]
+	path = mm10_anno
+	url = git@github.com:kristianlichtenberg/mm10_anno.git
