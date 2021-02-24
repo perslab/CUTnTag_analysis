@@ -1,0 +1,465 @@
+---
+title: "07_peakMatrix_processing"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(rmarkdown)
+library(tidyverse)
+library(Seurat)
+library(Signac)
+library(ggplot2)
+library(GenomeInfoDb)
+library(patchwork)
+library(GenomicRanges)
+set.seed(1234)
+
+source(file = "00_parameters.R")
+
+source(file = paste0(projPath,"/00_Rfunctions.R"))
+
+
+library(future)
+options(future.globals.maxSize = 50 * 1024 ^ 3,future.seed=TRUE) # for 50 Gb RAM
+plan("multisession", workers = nproc)
+#plan("sequential") #for Rstudio
+
+```
+
+### load signac RDS object:
+```{r}
+(signac<-readRDS(paste0(projPath,"/H3K27ac_BinClusteredObject.RDS")))
+# 
+# metadata<-readRDS(paste0(projPath, "metadataObject.RDS"))
+
+```
+
+
+# Read in peak lists from MACS2:
+## MACS2: pseudobulk broadpeak:
+```{r}
+broadpeak<-read.table(paste0(projPath, "/macs2/BinClusters/broad/",ExptName,"_", ExptName,"_AllCellrangerFragments_peaks.broadPeak"), header = FALSE,stringsAsFactors=FALSE)
+macs2Pseudobulk<-remove_blacklisted2Granges(peakTable=broadpeak)
+
+signac$FrIP_macs2Pseudobulk<-FractionCountsInRegion(
+  object = signac, 
+  assay = 'bin5000',
+  regions = macs2Pseudobulk
+)
+
+hist(signac$FrIP_macs2Pseudobulk, breaks=100)
+VlnPlot(signac, features ="FrIP_macs2Pseudobulk" )
+```
+
+
+## MACS2: Per BinCluster
+```{r}
+
+files<-
+  list.files(path=paste0(projPath, "/macs2/BinClusters/broad"),pattern =paste0(ExptName, "_BinCluster"), full.names = T)
+
+files<-files[grep(pattern="_peaks.broadPeak",x=files)]
+
+data <- files %>%
+  # read in all the files, appending the path before the filename
+  map(~ read.table( ., header = FALSE,stringsAsFactors=FALSE))
+
+# binCluster_GR_white<-resize(binCluster_GR_white,width = 1000)
+#############################
+#### Collect all in one file:
+#############################
+binClustersDFlist<-lapply(data, function(x) remove_blacklisted2Granges(peakTable=x))
+
+
+binClustersList<-GRangesList(binClustersDFlist)
+
+macs2BinClusters<-unlist(reduce(binClustersList))
+rtracklayer::export.bed(object = macs2BinClusters,paste0(projPath,"/macs2/BinClusters/broad/",ExptName,"_macs2BinClusters.bed"))
+
+
+#plotting:
+
+signac$FrIP_macs2BinClusters<-FractionCountsInRegion(
+  object = signac, 
+  assay = 'bin5000',
+  regions = macs2BinClusters
+)
+
+hist(signac$FrIP_macs2BinClusters, breaks=100)
+VlnPlot(signac, features ="FrIP_macs2BinClusters" )
+
+```
+
+
+## Cellranger pseudobulk peaks:
+```{r}
+
+cellrangerPeaks<-read.table(paste0(outsPath,"/peaks.bed"), header = FALSE,stringsAsFactors=FALSE)
+cellrangerPseudobulk<-bed3_2white_Granges(peakTable=cellrangerPeaks)
+
+signac$FrIP_cellrangerPseudobulk<-FractionCountsInRegion(
+  object = signac, 
+  assay = 'bin5000',
+  regions = cellrangerPseudobulk
+)
+
+hist(signac$FrIP_cellrangerPseudobulk, breaks=100)
+VlnPlot(signac, features ="FrIP_cellrangerPseudobulk" )
+```
+
+## SEACR: Per BinCluster
+```{r}
+
+files<-
+  list.files(path=paste0(projPath, "/seacr"),pattern =paste0( "BinCluster"), full.names = T)
+
+files<-files[grep(pattern="SEACRpeaks_stringentTop0.01peaks.bed.stringent.bed",x=files)]
+
+data <- files %>%
+  # read in all the files, appending the path before the filename
+  map(~ read.table( ., header = FALSE,stringsAsFactors=FALSE))
+
+seacrBinClustersList<-lapply(data, function(x) bed6_ToWhite_GRanges(peakTable=x))
+
+
+
+
+seacrBinClustersGRList<-GRangesList(seacrBinClustersList)
+
+seacrBinClusters<-unlist(reduce(seacrBinClustersGRList))
+
+rtracklayer::export.bed(object = seacrBinClusters,paste0(projPath,"/seacr/",ExptName,"_seacrBinClusters_AllInOne.bed"))
+
+
+signac$FrIP_seacrBinClusters<-FractionCountsInRegion(
+  object = signac, 
+  assay = 'bin5000',
+  regions = seacrBinClusters
+)
+
+hist(signac$FrIP_seacrBinClusters, breaks=100)
+VlnPlot(signac, features ="FrIP_seacrBinClusters" , group.by = "MULTI_ID")
+```
+
+
+
+
+### Choose which peak finding method for downstream analysis:
+```{r}
+#binClusters<-macs2BinClusters
+binClusters<-seacrBinClusters
+
+signac$FrIP_binClusters<-FractionCountsInRegion(
+  object = signac, 
+  assay = 'bin5000',
+  regions = binClusters
+)
+
+hist(signac$FrIP_binClusters, breaks=100)
+VlnPlot(signac, features ="FrIP_binClusters" )
+```
+
+
+## Create signac object from peak list
+```{r}
+fragments <- CreateFragmentObject(
+  path = paste0(outsPath, "/fragments.tsv.gz"),
+cells=rownames(signac@meta.data),
+  validate.fragments = FALSE
+)
+
+
+#add new counts based on MACS2 peaks:
+counts <- FeatureMatrix(
+  fragments =fragments,
+  features = binClusters,
+  process_n = 50000,
+cells=rownames(signac@meta.data)
+ )
+
+dim(counts)
+
+signac[["peaks"]] <- CreateChromatinAssay(counts = counts,
+                                          fragments = fragments@path,
+                                          annotation = annotations
+                                            )
+DefaultAssay(signac) <- 'peaks'
+
+signac
+# add the gene information to the object
+
+### Save RDS object:
+saveRDS(signac, "H3K27ac_peakMatrixObject_RAW.RDS")
+
+
+# signac<-
+#   subset(
+#   x = signac,subset =   passed_filters<75000 &
+#     FrIP_binClusters > 0.35 &
+#     promoter_ratio >0.05
+#   )
+```
+
+## Binarize
+```{r}
+signac[["binaryPeaks"]]<-signac[["peaks"]]
+signac[["binaryBins"]]<-signac[["bin5000"]]
+
+signac<- BinarizeCounts(signac, assay=c("binaryPeaks", "binaryBins"))
+```
+
+
+
+# Dimensionality reduction
+
+## Find top features from bins-> TF-IDF, SVD, UMAP
+```{r }
+DefaultAssay(signac) <- 'peaks'
+
+signac <- FindTopFeatures(signac, min.cutoff = "q5",verbose = T)
+signac
+
+
+signac <- RunTFIDF(signac)
+signac <- RunSVD(signac,
+               reduction.key = 'LSI_',
+               reduction.name = 'lsi_')
+
+DepthCor(signac, reduction = "lsi_", n = ndim)
+```
+
+
+
+
+## RunUMAP
+Excluding dimension #1 since it correlates with seq depth.
+```{r}
+signac <- RunUMAP(signac, reduction = 'lsi_', dims = 2:ndim, reduction.name = 'lsi_umap')
+
+#signac <- RunUMAP(signac, reduction = 'lsi_', dims = 2:30, reduction.name = 'lsi_umap', n.start=1000,spread=0.24, min_dist=1, n.neighbors = 15)
+
+
+p_bins<-DimPlot(signac, reduction = 'lsi_umap', label =T, label.box = T, repel = T, group.by = paste0("bin5000_snn_res.",BinRes))+
+  ggtitle("Clusters from bin5000")+
+  NoLegend()
+p_bins
+
+FeaturePlot(signac, features="enhancer_region_ratio" ,min.cutoff = "q5",split.by = "is_cellranger_cell_barcode")
+FeaturePlot(signac, features=c("nCount_peaks"),reduction = "lsi_umap" )
+FeaturePlot(signac, features=c("FrIP_binClusters"),reduction = "lsi_umap" )
+
+FeaturePlot(signac, signac@assays$peaks@var.features[1:4], slot="counts")
+```
+
+```{r, fig.width=10, fig.height=6}
+DefaultAssay(signac) <- 'peaks'
+
+signac <- FindNeighbors(object = signac, reduction = 'lsi_', dims =2:ndim, force.recalc = T)
+signac <- FindClusters(object = signac, verbose = FALSE, algorithm = 3, resolution=PeakRes)
+ table("binclusters"=signac$bin5000_snn_res.1,"peak_cluster"=signac$seurat_clusters)
+ 
+
+p_clusters<-DimPlot(signac, reduction = 'lsi_umap', label =T, label.box = T, repel = T, group.by = "seurat_clusters") +ggtitle("Clusters based on peaks")+NoLegend()
+p_clusters
+
+# p_dimplotSamples<-DimPlot(signac, reduction = 'lsi_umap', group.by="hash.ID", label =F, label.box = F, repel = T) +ggtitle("Samples based on peaks")
+# p_dimplotSamples
+
+
+ VlnPlot(signac, features="promoter_ratio", split.by="is_cellranger_cell_barcode")+ 
+   VlnPlot(signac, features="logUMI", split.by="is_cellranger_cell_barcode")+
+   plot_layout(guides = "collect")& theme(legend.position = 'bottom')
+
+p_bins+p_clusters+plot_annotation(title="UMAP from peak matrix",theme =  theme(plot.title = element_text(hjust = 0.5)))
+
+```
+
+## Make new bam-file for each cluster
+```{r}
+cells<-
+  signac@meta.data %>% 
+  #as_tibble() %>%
+  rownames_to_column("barcode") %>%
+    filter(is__cell_barcode=="1") %>% 
+  dplyr::select(barcode, seurat_clusters)
+
+cells$seurat_clusters<-paste0("PeakCluster",cells$seurat_clusters)
+
+write_tsv(x = cells, file=paste0(projPath,"/bam/FilteredCellBarcodes_PeakClusters.tsv"), col_names = FALSE)
+```
+
+
+```{r, fig.width=12, fig.height=12}
+VlnPlot(signac,
+            features = c("nCount_bin5000",
+                         "nFeature_bin5000",
+                         "nCount_HTO",
+                         "passed_filters",
+                        #"mitochondrial",
+                        "duplicate",
+                         "enhancerPercentage",
+                         "nCount_RNA",
+                         "nFeature_RNA", 
+                      #   "HTO_margin",
+                         "blacklist_region_fragments","FrIP_binClusters"),log = T
+                         )
+)
+  table(signac$seurat_clusters, signac$is_cellranger_cell_barcode)
+
+
+```
+
+
+```{r, fig.height=10, fig.width=8}
+markers<-toupper(
+  
+  c(
+#"Tbr1", 
+"Slc17a6","Satb2","Nr5a1","Fezf1",
+ "Slc32a1","Otp","Dlk1","Adcyap1",
+"Agrp", "Pomc", "Npy", "Sst",
+"Lepr",
+"Meis2",
+"Zfhx4", 
+"Ghrh", 
+#"Oxt",
+#"Cck", 
+"Ebf3",
+#"Gfap",
+"Nfib", "Esr1"
+#"Rfx4", "Mog", "Alx4", "Gmds"
+  )
+)
+
+
+DefaultAssay(signac) <- 'RNA'
+
+p_markers<-FeaturePlot(
+  object = signac,
+  features = c(markers, "FrIP_binClusters"),
+  pt.size = 0.1,
+  max.cutoff = 'q90',
+  ncol = round(length(markers)/5)
+) & NoLegend() & NoAxes()
+
+p_markers
+
+p_vln_markers<-VlnPlot(signac, features=markers, group.by="seurat_clusters")
+p_vln_markers
+```
+
+### Save RDS object:
+```{r}
+saveRDS(signac,paste0(projPath,  "H3K27ac_PeaksClusteredObject.RDS"))
+```
+
+
+
+
+
+## Find DA peaks
+
+```{r}
+DefaultAssay(signac) <- 'peaks'
+Idents(signac) <- "seurat_clusters"
+da_peaks <- FindAllMarkers(
+  object = signac,
+  min.diff.pct = 0.1, #0.005
+  logfc.threshold = 0.1,
+  test.use = 'LR'
+)
+# 
+# da_peaks12<-FindMarkers(signac, ident.1 = "1", ident.2 = "3",
+#   min.diff.pct = 0.1,
+#   logfc.threshold = 0.1,
+#   test.use = 'LR'
+# )                                                                                                                                                                
+
+da_peaksGR <- makeGRangesFromDataFrame(separate(da_peaks, col=gene, sep="-",  c("Chr", "Start", "End")))
+elementMetadata(da_peaksGR)<-da_peaks
+names(elementMetadata(da_peaksGR))[7]<-"peak"
+
+
+blacklist.df = read_tsv(file=blacklist_file ,col_names = F) 
+blacklist.gr=GenomicRanges::GRanges(seqnames=blacklist.df$X1,
+               ranges=IRanges(start=as.numeric(blacklist.df$X2),
+                              end=as.numeric(blacklist.df$X3)))
+simpleGR_diff<-GenomicRanges::setdiff(da_peaksGR, blacklist.gr, ignore.strand=TRUE)
+da_peaksGR_white<-subsetByOverlaps(da_peaksGR,simpleGR_diff, ignore.strand=TRUE)
+
+filtered_regions.df<- 
+  da_peaksGR_white@elementMetadata %>% 
+  as_tibble() %>% 
+  filter(p_val_adj<0.1 & avg_logFC>0.25 |p_val_adj<0.1 &  -0.25>avg_logFC) %>% 
+  distinct(peak, .keep_all=T) %>%
+  group_by(cluster) %>% 
+  arrange(avg_logFC) %>%
+  dplyr::select(peak, cluster, avg_logFC,p_val_adj, everything())
+```
+
+
+```{r, fig.width=12, fig.height=12, warnings=F}
+DefaultAssay(signac) <- 'peaks'
+
+####top in each cluster
+closest <- ClosestFeature(signac,
+  regions = filtered_regions.df$peak,
+  )
+
+filtered_regions.df<-left_join(filtered_regions.df, closest, by=c("peak"= "query_region"))
+filtered_regions.df<-left_join(filtered_regions.df,
+as_tibble(binClusters) %>%
+ unite("peak", c(seqnames, start, end), sep = "-", remove = TRUE)
+                               )
+
+library(writexl)
+writexl::write_xlsx(filtered_regions.df, path = "DiffAcetylatedPeaks_FindAll.xlsx", col_names = TRUE)
+########
+```
+
+### Plot cov plots:
+```{r, fig.width=12, fig.height=12, warnings=F}
+
+covplot<-CoveragePlot(signac, 
+             filtered_regions.df %>%
+               group_by(cluster) %>%
+               slice_min(p_val_adj, n=3) %>%
+               pull(peak),
+             extend.upstream = 5000, extend.downstream = 5000,
+             group.by ="seurat_clusters",peaks = T,assay = "peaks" # not enough - needs to be default assay.
+             ) 
+
+suppressWarnings(print(covplot))
+```
+
+
+
+
+```{r}
+```
+
+
+
+```{r}
+```
+
+
+
+```{r}
+```
+
+
+
+```{r}
+```
+
+
+
+```{r}
+```
+
+
+
+```{r}
+sessionInfo()
+```
