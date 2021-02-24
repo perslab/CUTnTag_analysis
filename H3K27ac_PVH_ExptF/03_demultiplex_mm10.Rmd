@@ -1,0 +1,345 @@
+---
+title: "03_demultiplex_mm10"
+
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(Seurat)
+library(Signac)
+library(ggplot2)
+library(GenomeInfoDb)
+library(patchwork)
+set.seed(1234)
+
+source(file = here::here("00_parameters.R"))
+
+#special for mm10 part of ExptFG:
+outsPath<-"/nfsdata/projects/jph712/CUTnTag/H3K27ac_ExptFG/ExptFG/outs"
+# outsPath="/projects/oliver/SCOaaP/outs/SCOP_2020_0113/scATACseq/03_PipelineOut/210128_ExptFG_ExptH/cellranger/EndoPool_1/outs"
+hashPath="/projects/oliver/SCOaaP/outs/SCOP_2020_0113/scATACseq/03_PipelineOut/210128_ExptFG_ExptH/kite/HashPool_1_rc/featurecounts"
+
+
+dir.create(projPath)
+
+
+
+set.seed(1234)
+
+#Set thresholds
+
+cutoff_reads_min            = 3.2
+cutoff_reads_max            = 5.0
+cutoff_enhancer_ratio       = 0.2  
+
+
+ndim = 30
+
+```
+
+
+
+## Filter doublets and non-cells
+### Construct metadata inclduing barcode stats and set thresholds (low) 
+For fragments passing filter and TSS fragments. Will be further qualified by hashtags below.
+
+```{r, fig.height=12, fig.width=12}
+########## Filter the barcodes
+cat("*** Reading barcode statistics files \n")
+
+metadata_file      <- paste0(outsPath, '/singlecell.csv')
+ if (!file.exists(metadata_file)) {stop(paste0("Metadata file does not exist: ",metadata_file))}
+
+metadata = read.csv(metadata_file, header = 1)
+metadata = metadata[2:nrow(metadata),]
+metadata$logUMI = log10(metadata$passed_filters + 1)
+metadata$promoter_ratio = (metadata$promoter_region_fragments+1) / (metadata$passed_filters + 1)
+metadata$peak_region_ratio = (metadata$peak_region_fragments+1) / (metadata$passed_filters + 1)
+metadata$enhancer_region_ratio = (metadata$enhancer_region_fragments+1) / (metadata$passed_filters + 1)
+metadata$FRiP<-metadata$peak_region_ratio*100
+
+metadata$is_cellranger_cell_barcode<-metadata$is_mm10_cell_barcode
+
+#Subset by thresholds:
+metadata<- metadata %>%
+  mutate(., is__cell_barcode = ifelse(
+  #      passed_filters > cutoff_reads_min,
+   #(
+     passed_filters > 10^cutoff_reads_min &
+    #| passed_filters_GRCh38 > 10^cutoff_reads_min) &  
+     enhancer_region_ratio > 0.2 &
+     passed_filters < 10^cutoff_reads_max,
+      "1", "0"))
+
+table("MyFilter"=metadata$is__cell_barcode, "cellranger"=metadata$is_cellranger_cell_barcode)
+```
+
+##
+```{r}
+#############
+
+p1 <- ggplot(data = metadata,aes(x=logUMI,y=enhancer_region_ratio,col=factor(is_cellranger_cell_barcode))) + 
+  geom_point(size=0.1) + 
+  scale_color_manual(values=c("black","gold"),labels=c(paste("TRUE",sum(as.numeric(as.character(metadata$is_cellranger_cell_barcode)))),"FALSE")) +
+  theme(legend.title = element_blank())+
+  theme(legend.position="bottom",text=element_text(size=20)) +ggtitle("Cellranger cells")+ylim(c(0,0.5))
+
+
+
+p2<-ggplot(data = metadata,aes(x=logUMI,y=enhancer_region_ratio,col=factor(is__cell_barcode))) + 
+  geom_point(size=0.1) + 
+  scale_color_manual(values=c("black","gold"),
+                     labels=c(paste("TRUE",sum(as.numeric(as.character(metadata$is__cell_barcode)))),
+                              "FALSE")) +
+  theme(legend.position="bottom",text=element_text(size=20)) +
+   geom_hline(yintercept = cutoff_enhancer_ratio,  linetype="dashed",col="red")+
+   geom_vline(xintercept = (cutoff_reads_min),  linetype="dashed",col="red" )+
+  geom_vline(xintercept = (cutoff_reads_max),  linetype="dashed",col="red" )+
+  ggtitle("Cell calling by Enhancer Region Fragments")+
+  theme(legend.title = element_blank())+ylim(c(0,0.5))
+
+p1+p2 & theme(legend.position = 'bottom')
+#plot_layout(guides = "collect")
+
+####FrIP:
+p_fripCellranger<-ggplot(data = metadata,aes(x=log10(passed_filters),y=FRiP,col=factor(is_cellranger_cell_barcode))) + 
+  geom_point(size=0.1) + 
+  scale_color_manual(values=c("black","gold"),
+                     labels=c(paste("TRUE",sum(as.numeric(as.character(metadata$is_cellranger_cell_barcode)))),
+                              "FALSE")) +
+  ggtitle("Filtered by passed_filters fragments")+
+  theme(legend.title = element_blank())
+
+p_frip<-ggplot(data = metadata,aes(x=log10(passed_filters),y=FRiP,col=factor(is__cell_barcode))) + 
+  geom_point(size=0.1) + 
+  scale_color_manual(values=c("black","gold"),
+                     labels=c(paste("TRUE",sum(as.numeric(as.character(metadata$is__cell_barcode)))),
+                              "FALSE")) +
+  ggtitle("Filtered by passed_filters fragments")+
+  theme(legend.title = element_blank())
+
+p_fripCellranger+p_frip& theme(legend.position = 'bottom')
+#plot_layout(guides = "collect")
+
+
+ggplot(data = metadata,aes(x=log10(passed_filters_mm10),y=log10(passed_filters_GRCh38),col=factor(is__cell_barcode))) + 
+  geom_point(size=0.1) + 
+  scale_color_manual(values=c("black","gold"),
+                     labels=c(paste("TRUE",sum(as.numeric(as.character(metadata$is__cell_barcode)))),
+                              "FALSE")) +
+  ggtitle("Filtered by passed_filters fragments")+
+  theme(legend.title = element_blank())
+
+
+ggplot(data = metadata,aes(x=log10(passed_filters_mm10),y=FRiP,col=factor(is__cell_barcode))) + 
+  geom_point(size=0.1) + 
+  scale_color_manual(values=c("black","gold"),
+                     labels=c(paste("TRUE",sum(as.numeric(as.character(metadata$is__cell_barcode)))),
+                              "FALSE")) +
+  ggtitle("Filtered by passed_filters fragments")+
+  theme(legend.title = element_blank())
+```
+
+
+
+## Filter Doublets using hashtags:
+Hash-counts for filtered barcodes
+```{r, eval=T, fig.width=12, fig.height=20}
+mtx_path <- paste0(hashPath, "/featurecounts.mtx" )
+feature_path <- paste0(hashPath, "/featurecounts.genes.txt" )
+barcode_path <- paste0(hashPath, "/featurecounts.barcodes.txt")
+ 
+features <- readr::read_tsv(feature_path, col_names = F) %>% tidyr::unite(hto) 
+barcodes <- readr::read_tsv(barcode_path, col_names = F) %>% tidyr::unite(barcode) 
+
+hto_t <- Matrix::readMM(mtx_path) %>%
+  magrittr::set_colnames(features$hto) %>%
+  magrittr::set_rownames(paste0(barcodes$barcode, "-1"))
+
+hto_unf<-t(as.matrix((hto_t)))
+
+hto <- hto_unf[, intersect(metadata %>%
+                            filter(is__cell_barcode==1) %>%
+                             pull(barcode), colnames(hto_unf))]
+#hto<-hto[,colSums(hto)>100]
+#hto<-hto[,colSums(hto)<1000]
+dim(hto)
+```
+
+
+
+#### Create seruat HTO object
+```{r}
+#Create seurat object:
+seur_hto<-CreateSeuratObject(counts=hto, project = "hto" ,assay="HTO", min.features = 1,  min.cells = 1)
+
+
+seur_hto<-NormalizeData(seur_hto, normalization.method = "CLR", assay="HTO")
+seur_hto
+```
+
+### Plot doublet and negative proportion to find fitting quantile
+```{r, eval=F}
+### Plot doublet and negative proportion to find fitting quantile
+dat <- map(seq(.9999,1,length.out =10), function(x) HTODemux(seur_hto, positive.quantile = x, init=8))
+res <- map_dfr(dat, function(x) table(x$hash.ID)) %>% mutate(quant=seq(.9999,1,length.out = 10))
+res %>% pivot_longer(-quant) %>% 
+  filter(quant!=1) %>% 
+  ggplot() + aes(x=quant, y=value, color=name) + geom_point() + geom_line()
+```
+
+
+```{r}
+
+# Set quantile from above plot.
+seur_hto<-HTODemux(seur_hto, positive.quantile = .99)
+table(seur_hto$HTO_classification.global)
+
+seur_hto<-AddMetaData(seur_hto, metadata %>% column_to_rownames("barcode"))
+```
+
+
+```{r}
+ggplot(seur_hto@meta.data, aes(x=nCount_HTO, y=enhancer_region_ratio, col=factor(HTO_maxID)))+
+  geom_point()+
+   scale_x_log10()+scale_y_log10()
+
+ggplot(seur_hto@meta.data, aes(x=passed_filters, y=nCount_HTO, col=factor(hash.ID)))+
+  geom_point()+
+   scale_x_log10()+scale_y_log10()
+
+ggplot(seur_hto@meta.data, aes(x=passed_filters_GRCh38, y=passed_filters_mm10, col=factor(HTO_maxID)))+
+  geom_point()+
+   scale_x_log10()+scale_y_log10()
+```
+
+
+```{r, fig.width=20}
+Idents(seur_hto) <- "HTO_maxID"
+RidgePlot(seur_hto, assay = "HTO", features = rownames(seur_hto[["HTO"]])[1:10], ncol = 3)
+```
+
+
+## Demultiplexing with hashtags:
+
+```{r}
+
+Idents(seur_hto) <- "hash.ID"
+hto.dist.mtx <- as.matrix(dist(t(GetAssayData(object = seur_hto, assay = "HTO"))))
+seur_hto <- RunTSNE(seur_hto, distance.matrix = hto.dist.mtx)
+```
+
+
+```{r, fig.width=7, fig.height=7}
+
+
+
+
+
+DimPlot(seur_hto,group.by = "hash.ID",pt.size = 1,cols= c("polychrome"))+ggtitle("hash.ID")#+NoLegend()
+
+seur_hto<-
+  subset(seur_hto,
+             HTO_classification.global !="Negative")
+
+DimPlot(seur_hto, group.by="HTO_maxID")+ggtitle("HTO_maxID")
+
+Idents(seur_hto) <- "HTO_maxID"
+vln1<-VlnPlot(seur_hto, features=c("nCount_HTO", "passed_filters", "duplicate"), log = T)
+vln2<-VlnPlot(seur_hto, features=c("enhancer_region_ratio", "FRiP","blacklist_region_fragments"), log = F)
+vln1/vln2
+
+FeaturePlot(seur_hto, feature=c("nCount_HTO", "passed_filters","HTO_margin", "nCount_HTO","enhancer_region_ratio", "FRiP", "duplicate"))
+
+seur_hto@meta.data %>%
+  ggplot(., aes(log10(duplicate), log10(passed_filters_GRCh38), col=factor(HTO_maxID))) + geom_point()
+```
+
+
+```{r}
+########
+metadata<-
+seur_hto@meta.data %>% rownames_to_column("barcode") %>%
+separate(., "HTO_maxID", sep = "-", c("Experiment", "BrainArea","BioSample" ), remove=F) %>%
+  right_join(.,metadata)
+
+metadata%>%
+  ggplot(., aes(log10(passed_filters_mm10), log10(passed_filters_GRCh38), col=factor(is__cell_barcode))) + geom_point()
+
+metadata<-metadata %>%mutate(.,mouseCells = ifelse(
+  Experiment =="ExptF" & 
+    passed_filters_GRCh38 < 10^3,
+  "1", "0")) %>%
+mutate(is__cell_barcode=replace_na(mouseCells,0))
+
+
+```
+
+
+```{r, fig.width=12, fig.height=4}
+# metadata<-
+# seur_hto@meta.data %>% rownames_to_column("barcode") %>%
+#   right_join(.,metadata) %>%  # mutate(.,singlet = ifelse(
+#   #   HTO_classification.global =="Singlet",
+#   #   "1", "0")) %>% 
+#   # mutate(is__cell_barcode=replace_na(singlet,0))
+# mutate()
+
+
+p3<-ggplot(data = metadata,aes(x=log10(passed_filters),y=enhancer_region_ratio,col=factor(is__cell_barcode))) + 
+  geom_point(size=0.1) + 
+  scale_color_manual(values=c("black","gold"),
+                     labels=c(paste("TRUE",sum(as.numeric(as.character(metadata$is__cell_barcode)))),
+                              "FALSE")) +
+  theme(legend.position="bottom",text=element_text(size=20)) +
+   geom_hline(yintercept = cutoff_enhancer_ratio,  linetype="dashed",col="red")+
+   geom_vline(xintercept = log10(cutoff_reads_min),  linetype="dashed",col="red" )+
+  ggtitle("Mouse Cells from HTO")+
+  theme(legend.title = element_blank())+ylim(0,0.5)
+
+
+p1+p2+p3 & theme(legend.position = 'bottom')
+#+ plot_layout(guides = "collect")
+
+table("Singlet"=metadata$mouseCells, "cellranger"=metadata$is_cellranger_cell_barcode)
+
+```
+
+## Make signac object
+```{r}
+saveRDS(metadata, paste0(projPath,"/", ExptName, "_metadataObject.RDS"))
+```
+
+
+
+## Make new bam-file for with only called cells
+### R script to print filtered_cell_barcodes
+```{r sinto_tsv}
+dir.create(paste0(projPath,"/bam"))
+
+cells<-
+  # seur_hto@meta.data %>% rownames_to_column("barcode") %>%
+  #  mutate(., is__cell_barcode = ifelse(
+  #    HTO_classification.global =="Singlet",
+  #    "1", "0")) %>%
+  metadata %>%
+  filter(is__cell_barcode=="1")%>% 
+  dplyr::select(barcode, is__cell_barcode)
+
+cells$is__cell_barcode<-paste0(ExptName, "_FilteredCells")
+
+write_tsv(x = cells, file=paste0(projPath,"/bam/FilteredCellBarcodes.tsv"), col_names = FALSE)
+```
+
+
+
+## go to chapter 04.
+
+
+```{r}
+sessionInfo()
+
+```
