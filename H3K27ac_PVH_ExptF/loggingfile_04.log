@@ -1,0 +1,581 @@
++ outsPath=/projects/oliver/SCOaaP/outs/SCOP_2020_0113/scATACseq/03_PipelineOut/210128_ExptFG_ExptH/cellranger/EndoPool_1/outs
++ hashPath=/projects/oliver/SCOaaP/outs/SCOP_2020_0113/scATACseq/03_PipelineOut/210128_ExptFG_ExptH/kite/HashPool_1_rc/featurecounts
++ projPath=/nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF
++ ExptName=H3K27ac_PVH_ExptF
++ nproc=30
++ GRCm38=2652783500
++ blacklist_mm10=/projects/jph712/CUTnTag/H3K27ac_ARC_scCUTnTAG_B/deepTools/mm10-blacklist.v2.bed
++ mkdir /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/tmpUnsorted -p
++ samtools view -b -f 2 -F 1804 -@ 30 -o /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/tmpUnsorted/H3K27ac_PVH_ExptF_NoDupUnsorted.bam /projects/oliver/SCOaaP/outs/SCOP_2020_0113/scATACseq/03_PipelineOut/210128_ExptFG_ExptH/cellranger/EndoPool_1/outs/possorted_bam.bam
++ samtools sort /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/tmpUnsorted/H3K27ac_PVH_ExptF_NoDupUnsorted.bam
+[bam_sort_core] merging from 11 files and 1 in-memory blocks...
++ samtools index /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_AllCellrangerFragments.bam
++ mkdir /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam -p
++ cd /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam
++ sinto filterbarcodes -b /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_AllCellrangerFragments.bam -p 30 -c /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/FilteredCellBarcodes.tsv
+Function run_filterbarcodes called with the following arguments:
+
+bam	/nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_AllCellrangerFragments.bam
+cells	/nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/FilteredCellBarcodes.tsv
+trim_suffix	False
+nproc	30
+barcode_regex	None
+barcodetag	CB
+func	<function run_filterbarcodes at 0x7fa1752bc700>
+
+Function completed in  0.0 m 40.08 s
+
++ samtools index /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_FilteredCells.bam
++ mkdir /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bigwig -p
++ bamCoverage --bam /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_AllCellrangerFragments.bam --outFileName /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bigwig/H3K27ac_PVH_ExptF_AllCellrangerFragments_nucFree.bigWig --outFileFormat bigwig --numberOfProcessors 30 --minFragmentLength 20 --maxFragmentLength 121 --blackListFileName /projects/jph712/CUTnTag/H3K27ac_ARC_scCUTnTAG_B/deepTools/mm10-blacklist.v2.bed -bs 1 --ignoreDuplicates --ignoreForNormalization chrX chrM --extendReads --normalizeUsing RPGC --effectiveGenomeSize 2652783500
+WARNING: The minimum distance between intervals in your blacklist is 0. It makes little biological sense to include small regions between two blacklisted regions. Instead, these should likely be blacklisted as well.
+There are 24194449 alignments, of which 1746657 are completely within a blacklist region.
+Due to filtering, 30.3923343731594% of the aforementioned alignments will be used 6822408.004031327
+normalization: 1x (effective genome size 2652783500)
+bamFilesList: ['/nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_AllCellrangerFragments.bam']
+binLength: 1
+numberOfSamples: None
+blackListFileName: ['/projects/jph712/CUTnTag/H3K27ac_ARC_scCUTnTAG_B/deepTools/mm10-blacklist.v2.bed']
+skipZeroOverZero: False
+bed_and_bin: False
+genomeChunkSize: None
+defaultFragmentLength: 182
+numberOfProcessors: 30
+verbose: False
+region: None
+bedFile: None
+minMappingQuality: None
+ignoreDuplicates: True
+chrsToSkip: ['chrX', 'chrM']
+stepSize: 1
+center_read: False
+samFlag_include: None
+samFlag_exclude: None
+minFragmentLength: 20
+maxFragmentLength: 121
+zerosToNans: False
+smoothLength: None
+save_data: False
+out_file_for_raw_data: None
+maxPairedFragmentLength: 121
++ bamCoverage --bam /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_AllCellrangerFragments.bam --outFileName /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bigwig/H3K27ac_PVH_ExptF_AllCellrangerFragments_Nucleosomal.bigWig --outFileFormat bigwig --numberOfProcessors 30 --minFragmentLength 120 --maxFragmentLength 800 --blackListFileName /projects/jph712/CUTnTag/H3K27ac_ARC_scCUTnTAG_B/deepTools/mm10-blacklist.v2.bed -bs 1 --ignoreDuplicates --ignoreForNormalization chrX chrM --extendReads --normalizeUsing RPGC --effectiveGenomeSize 2652783500
+WARNING: The minimum distance between intervals in your blacklist is 0. It makes little biological sense to include small regions between two blacklisted regions. Instead, these should likely be blacklisted as well.
+There are 24194449 alignments, of which 1746657 are completely within a blacklist region.
+Due to filtering, 66.38339586832748% of the aforementioned alignments will be used 14901606.627058746
+normalization: 1x (effective genome size 2652783500)
+bamFilesList: ['/nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_AllCellrangerFragments.bam']
+binLength: 1
+numberOfSamples: None
+blackListFileName: ['/projects/jph712/CUTnTag/H3K27ac_ARC_scCUTnTAG_B/deepTools/mm10-blacklist.v2.bed']
+skipZeroOverZero: False
+bed_and_bin: False
+genomeChunkSize: None
+defaultFragmentLength: 182
+numberOfProcessors: 30
+verbose: False
+region: None
+bedFile: None
+minMappingQuality: None
+ignoreDuplicates: True
+chrsToSkip: ['chrX', 'chrM']
+stepSize: 1
+center_read: False
+samFlag_include: None
+samFlag_exclude: None
+minFragmentLength: 120
+maxFragmentLength: 800
+zerosToNans: False
+smoothLength: None
+save_data: False
+out_file_for_raw_data: None
+maxPairedFragmentLength: 800
++ bamCoverage --bam /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_AllCellrangerFragments.bam --outFileName /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bigwig/H3K27ac_PVH_ExptF_AllCellrangerFragments_extendReads.bigWig --outFileFormat bigwig --numberOfProcessors 30 --minFragmentLength 20 --maxFragmentLength 800 --blackListFileName /projects/jph712/CUTnTag/H3K27ac_ARC_scCUTnTAG_B/deepTools/mm10-blacklist.v2.bed -bs 1 --ignoreDuplicates --ignoreForNormalization chrX chrM --extendReads --normalizeUsing RPGC --effectiveGenomeSize 2652783500
+WARNING: The minimum distance between intervals in your blacklist is 0. It makes little biological sense to include small regions between two blacklisted regions. Instead, these should likely be blacklisted as well.
+There are 24194449 alignments, of which 1746657 are completely within a blacklist region.
+Due to filtering, 96.55853929888092% of the aforementioned alignments will be used 21675260.060051046
+normalization: 1x (effective genome size 2652783500)
+bamFilesList: ['/nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_AllCellrangerFragments.bam']
+binLength: 1
+numberOfSamples: None
+blackListFileName: ['/projects/jph712/CUTnTag/H3K27ac_ARC_scCUTnTAG_B/deepTools/mm10-blacklist.v2.bed']
+skipZeroOverZero: False
+bed_and_bin: False
+genomeChunkSize: None
+defaultFragmentLength: 182
+numberOfProcessors: 30
+verbose: False
+region: None
+bedFile: None
+minMappingQuality: None
+ignoreDuplicates: True
+chrsToSkip: ['chrX', 'chrM']
+stepSize: 1
+center_read: False
+samFlag_include: None
+samFlag_exclude: None
+minFragmentLength: 20
+maxFragmentLength: 800
+zerosToNans: False
+smoothLength: None
+save_data: False
+out_file_for_raw_data: None
+maxPairedFragmentLength: 800
++ bamCoverage --bam /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_FilteredCells.bam --outFileName /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bigwig/H3K27ac_PVH_ExptF_filteredCells_nucFree.bigWig --outFileFormat bigwig --numberOfProcessors 30 --minFragmentLength 20 --maxFragmentLength 121 --blackListFileName /projects/jph712/CUTnTag/H3K27ac_ARC_scCUTnTAG_B/deepTools/mm10-blacklist.v2.bed -bs 1 --ignoreDuplicates --ignoreForNormalization chrX chrM --extendReads --normalizeUsing RPGC --effectiveGenomeSize 2652783500
+WARNING: The minimum distance between intervals in your blacklist is 0. It makes little biological sense to include small regions between two blacklisted regions. Instead, these should likely be blacklisted as well.
+There are 13898957 alignments, of which 1058283 are completely within a blacklist region.
+Due to filtering, 20.428863926169072% of the aforementioned alignments will be used 2623203.8186629713
+normalization: 1x (effective genome size 2652783500)
+bamFilesList: ['/nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_FilteredCells.bam']
+binLength: 1
+numberOfSamples: None
+blackListFileName: ['/projects/jph712/CUTnTag/H3K27ac_ARC_scCUTnTAG_B/deepTools/mm10-blacklist.v2.bed']
+skipZeroOverZero: False
+bed_and_bin: False
+genomeChunkSize: None
+defaultFragmentLength: 215
+numberOfProcessors: 30
+verbose: False
+region: None
+bedFile: None
+minMappingQuality: None
+ignoreDuplicates: True
+chrsToSkip: ['chrX', 'chrM']
+stepSize: 1
+center_read: False
+samFlag_include: None
+samFlag_exclude: None
+minFragmentLength: 20
+maxFragmentLength: 121
+zerosToNans: False
+smoothLength: None
+save_data: False
+out_file_for_raw_data: None
+maxPairedFragmentLength: 121
++ bamCoverage --bam /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_FilteredCells.bam --outFileName /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bigwig/H3K27ac_PVH_ExptF_filteredCells_Nucleosomal.bigWig --outFileFormat bigwig --numberOfProcessors 30 --minFragmentLength 120 --maxFragmentLength 800 --blackListFileName /projects/jph712/CUTnTag/H3K27ac_ARC_scCUTnTAG_B/deepTools/mm10-blacklist.v2.bed -bs 1 --ignoreDuplicates --ignoreForNormalization chrX chrM --extendReads --normalizeUsing RPGC --effectiveGenomeSize 2652783500
+WARNING: The minimum distance between intervals in your blacklist is 0. It makes little biological sense to include small regions between two blacklisted regions. Instead, these should likely be blacklisted as well.
+There are 13898957 alignments, of which 1058283 are completely within a blacklist region.
+Due to filtering, 78.68412205704921% of the aforementioned alignments will be used 10103571.603107784
+normalization: 1x (effective genome size 2652783500)
+bamFilesList: ['/nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_FilteredCells.bam']
+binLength: 1
+numberOfSamples: None
+blackListFileName: ['/projects/jph712/CUTnTag/H3K27ac_ARC_scCUTnTAG_B/deepTools/mm10-blacklist.v2.bed']
+skipZeroOverZero: False
+bed_and_bin: False
+genomeChunkSize: None
+defaultFragmentLength: 215
+numberOfProcessors: 30
+verbose: False
+region: None
+bedFile: None
+minMappingQuality: None
+ignoreDuplicates: True
+chrsToSkip: ['chrX', 'chrM']
+stepSize: 1
+center_read: False
+samFlag_include: None
+samFlag_exclude: None
+minFragmentLength: 120
+maxFragmentLength: 800
+zerosToNans: False
+smoothLength: None
+save_data: False
+out_file_for_raw_data: None
+maxPairedFragmentLength: 800
++ bamCoverage --bam /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_FilteredCells.bam --outFileName /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bigwig/H3K27ac_PVH_ExptF_filteredCells_extendReads.bigWig --outFileFormat bigwig --numberOfProcessors 30 --minFragmentLength 20 --maxFragmentLength 800 --blackListFileName /projects/jph712/CUTnTag/H3K27ac_ARC_scCUTnTAG_B/deepTools/mm10-blacklist.v2.bed -bs 1 --ignoreDuplicates --ignoreForNormalization chrX chrM --extendReads --normalizeUsing RPGC --effectiveGenomeSize 2652783500
+WARNING: The minimum distance between intervals in your blacklist is 0. It makes little biological sense to include small regions between two blacklisted regions. Instead, these should likely be blacklisted as well.
+There are 13898957 alignments, of which 1058283 are completely within a blacklist region.
+Due to filtering, 98.96483994052595% of the aforementioned alignments will be used 12707752.471384732
+normalization: 1x (effective genome size 2652783500)
+bamFilesList: ['/nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_FilteredCells.bam']
+binLength: 1
+numberOfSamples: None
+blackListFileName: ['/projects/jph712/CUTnTag/H3K27ac_ARC_scCUTnTAG_B/deepTools/mm10-blacklist.v2.bed']
+skipZeroOverZero: False
+bed_and_bin: False
+genomeChunkSize: None
+defaultFragmentLength: 215
+numberOfProcessors: 30
+verbose: False
+region: None
+bedFile: None
+minMappingQuality: None
+ignoreDuplicates: True
+chrsToSkip: ['chrX', 'chrM']
+stepSize: 1
+center_read: False
+samFlag_include: None
+samFlag_exclude: None
+minFragmentLength: 20
+maxFragmentLength: 800
+zerosToNans: False
+smoothLength: None
+save_data: False
+out_file_for_raw_data: None
+maxPairedFragmentLength: 800
++ mkdir macs2/BinClusters/narrow -p
++ mkdir macs2/BinClusters/broad -p
++ for i in '${projPath}/bam/${ExptName}_AllCellrangerFragments.bam'
++ pathName=/nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_AllCellrangerFragments
++ clusterName=H3K27ac_PVH_ExptF_AllCellrangerFragments
++ macs2 callpeak -t /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_AllCellrangerFragments.bam -g mm -f BAMPE -n H3K27ac_PVH_ExptF_H3K27ac_PVH_ExptF_AllCellrangerFragments --outdir /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/macs2/BinClusters/narrow -q 0.01 -B --SPMR --keep-dup=1
+INFO  @ Tue, 09 Feb 2021 15:46:43: 
+# Command line: callpeak -t /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_AllCellrangerFragments.bam -g mm -f BAMPE -n H3K27ac_PVH_ExptF_H3K27ac_PVH_ExptF_AllCellrangerFragments --outdir /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/macs2/BinClusters/narrow -q 0.01 -B --SPMR --keep-dup=1
+# ARGUMENTS LIST:
+# name = H3K27ac_PVH_ExptF_H3K27ac_PVH_ExptF_AllCellrangerFragments
+# format = BAMPE
+# ChIP-seq file = ['/nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_AllCellrangerFragments.bam']
+# control file = None
+# effective genome size = 1.87e+09
+# band width = 300
+# model fold = [5, 50]
+# qvalue cutoff = 1.00e-02
+# The maximum gap between significant sites is assigned as the read length/tag size.
+# The minimum length of peaks is assigned as the predicted fragment length "d".
+# Larger dataset will be scaled towards smaller dataset.
+# Range for calculating regional lambda is: 10000 bps
+# Broad region calling is off
+# Paired-End mode is on
+# MACS will save fragment pileup signal per million reads
+ 
+INFO  @ Tue, 09 Feb 2021 15:46:43: #1 read fragment files... 
+INFO  @ Tue, 09 Feb 2021 15:46:43: #1 read treatment fragments... 
+INFO  @ Tue, 09 Feb 2021 15:46:47:  1000000 
+INFO  @ Tue, 09 Feb 2021 15:46:52:  2000000 
+INFO  @ Tue, 09 Feb 2021 15:46:56:  3000000 
+INFO  @ Tue, 09 Feb 2021 15:47:01:  4000000 
+INFO  @ Tue, 09 Feb 2021 15:47:05:  5000000 
+INFO  @ Tue, 09 Feb 2021 15:47:10:  6000000 
+INFO  @ Tue, 09 Feb 2021 15:47:14:  7000000 
+INFO  @ Tue, 09 Feb 2021 15:47:19:  8000000 
+INFO  @ Tue, 09 Feb 2021 15:47:23:  9000000 
+INFO  @ Tue, 09 Feb 2021 15:47:28:  10000000 
+INFO  @ Tue, 09 Feb 2021 15:47:32:  11000000 
+INFO  @ Tue, 09 Feb 2021 15:47:37:  12000000 
+INFO  @ Tue, 09 Feb 2021 15:47:39: 12549323 fragments have been read. 
+INFO  @ Tue, 09 Feb 2021 15:47:45: #1 mean fragment size is determined as 206.3 bp from treatment 
+INFO  @ Tue, 09 Feb 2021 15:47:45: #1 fragment size = 206.3 
+INFO  @ Tue, 09 Feb 2021 15:47:45: #1  total fragments in treatment: 12549323 
+INFO  @ Tue, 09 Feb 2021 15:47:45: #1 user defined the maximum fragments... 
+INFO  @ Tue, 09 Feb 2021 15:47:45: #1 filter out redundant fragments by allowing at most 1 identical fragment(s) 
+INFO  @ Tue, 09 Feb 2021 15:48:03: #1  fragments after filtering in treatment: 12385826 
+INFO  @ Tue, 09 Feb 2021 15:48:03: #1  Redundant rate of treatment: 0.01 
+INFO  @ Tue, 09 Feb 2021 15:48:03: #1 finished! 
+INFO  @ Tue, 09 Feb 2021 15:48:03: #2 Build Peak Model... 
+INFO  @ Tue, 09 Feb 2021 15:48:03: #2 Skipped... 
+INFO  @ Tue, 09 Feb 2021 15:48:03: #3 Call peaks... 
+INFO  @ Tue, 09 Feb 2021 15:48:03: #3 Pre-compute pvalue-qvalue table... 
+INFO  @ Tue, 09 Feb 2021 15:48:43: #3 In the peak calling step, the following will be performed simultaneously: 
+INFO  @ Tue, 09 Feb 2021 15:48:43: #3   Write bedGraph files for treatment pileup (after scaling if necessary)... H3K27ac_PVH_ExptF_H3K27ac_PVH_ExptF_AllCellrangerFragments_treat_pileup.bdg 
+INFO  @ Tue, 09 Feb 2021 15:48:43: #3   Write bedGraph files for control lambda (after scaling if necessary)... H3K27ac_PVH_ExptF_H3K27ac_PVH_ExptF_AllCellrangerFragments_control_lambda.bdg 
+INFO  @ Tue, 09 Feb 2021 15:48:43: #3   --SPMR is requested, so pileup will be normalized by sequencing depth in million reads. 
+INFO  @ Tue, 09 Feb 2021 15:48:43: #3 Call peaks for each chromosome... 
+INFO  @ Tue, 09 Feb 2021 15:50:23: #4 Write output xls file... /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/macs2/BinClusters/narrow/H3K27ac_PVH_ExptF_H3K27ac_PVH_ExptF_AllCellrangerFragments_peaks.xls 
+INFO  @ Tue, 09 Feb 2021 15:50:23: #4 Write peak in narrowPeak format file... /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/macs2/BinClusters/narrow/H3K27ac_PVH_ExptF_H3K27ac_PVH_ExptF_AllCellrangerFragments_peaks.narrowPeak 
+INFO  @ Tue, 09 Feb 2021 15:50:23: #4 Write summits bed file... /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/macs2/BinClusters/narrow/H3K27ac_PVH_ExptF_H3K27ac_PVH_ExptF_AllCellrangerFragments_summits.bed 
+INFO  @ Tue, 09 Feb 2021 15:50:23: Done! 
++ macs2 callpeak -t /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_AllCellrangerFragments.bam -g mm -f BAMPE -n H3K27ac_PVH_ExptF_H3K27ac_PVH_ExptF_AllCellrangerFragments --outdir /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/macs2/BinClusters/broad -q 0.01 -B --SPMR --keep-dup=1 --broad-cutoff=0.1 --broad
+INFO  @ Tue, 09 Feb 2021 15:50:24: 
+# Command line: callpeak -t /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_AllCellrangerFragments.bam -g mm -f BAMPE -n H3K27ac_PVH_ExptF_H3K27ac_PVH_ExptF_AllCellrangerFragments --outdir /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/macs2/BinClusters/broad -q 0.01 -B --SPMR --keep-dup=1 --broad-cutoff=0.1 --broad
+# ARGUMENTS LIST:
+# name = H3K27ac_PVH_ExptF_H3K27ac_PVH_ExptF_AllCellrangerFragments
+# format = BAMPE
+# ChIP-seq file = ['/nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_AllCellrangerFragments.bam']
+# control file = None
+# effective genome size = 1.87e+09
+# band width = 300
+# model fold = [5, 50]
+# qvalue cutoff for narrow/strong regions = 1.00e-02
+# qvalue cutoff for broad/weak regions = 1.00e-01
+# The maximum gap between significant sites is assigned as the read length/tag size.
+# The minimum length of peaks is assigned as the predicted fragment length "d".
+# Larger dataset will be scaled towards smaller dataset.
+# Range for calculating regional lambda is: 10000 bps
+# Broad region calling is on
+# Paired-End mode is on
+# MACS will save fragment pileup signal per million reads
+ 
+INFO  @ Tue, 09 Feb 2021 15:50:24: #1 read fragment files... 
+INFO  @ Tue, 09 Feb 2021 15:50:24: #1 read treatment fragments... 
+INFO  @ Tue, 09 Feb 2021 15:50:28:  1000000 
+INFO  @ Tue, 09 Feb 2021 15:50:33:  2000000 
+INFO  @ Tue, 09 Feb 2021 15:50:37:  3000000 
+INFO  @ Tue, 09 Feb 2021 15:50:42:  4000000 
+INFO  @ Tue, 09 Feb 2021 15:50:46:  5000000 
+INFO  @ Tue, 09 Feb 2021 15:50:51:  6000000 
+INFO  @ Tue, 09 Feb 2021 15:50:55:  7000000 
+INFO  @ Tue, 09 Feb 2021 15:51:00:  8000000 
+INFO  @ Tue, 09 Feb 2021 15:51:04:  9000000 
+INFO  @ Tue, 09 Feb 2021 15:51:09:  10000000 
+INFO  @ Tue, 09 Feb 2021 15:51:13:  11000000 
+INFO  @ Tue, 09 Feb 2021 15:51:18:  12000000 
+INFO  @ Tue, 09 Feb 2021 15:51:21: 12549323 fragments have been read. 
+INFO  @ Tue, 09 Feb 2021 15:51:26: #1 mean fragment size is determined as 206.3 bp from treatment 
+INFO  @ Tue, 09 Feb 2021 15:51:26: #1 fragment size = 206.3 
+INFO  @ Tue, 09 Feb 2021 15:51:26: #1  total fragments in treatment: 12549323 
+INFO  @ Tue, 09 Feb 2021 15:51:26: #1 user defined the maximum fragments... 
+INFO  @ Tue, 09 Feb 2021 15:51:26: #1 filter out redundant fragments by allowing at most 1 identical fragment(s) 
+INFO  @ Tue, 09 Feb 2021 15:51:44: #1  fragments after filtering in treatment: 12385826 
+INFO  @ Tue, 09 Feb 2021 15:51:44: #1  Redundant rate of treatment: 0.01 
+INFO  @ Tue, 09 Feb 2021 15:51:44: #1 finished! 
+INFO  @ Tue, 09 Feb 2021 15:51:44: #2 Build Peak Model... 
+INFO  @ Tue, 09 Feb 2021 15:51:44: #2 Skipped... 
+INFO  @ Tue, 09 Feb 2021 15:51:44: #3 Call peaks... 
+INFO  @ Tue, 09 Feb 2021 15:51:44: #3 Call broad peaks with given level1 -log10qvalue cutoff and level2: 2.000000, 1.000000... 
+INFO  @ Tue, 09 Feb 2021 15:51:44: #3 Pre-compute pvalue-qvalue table... 
+INFO  @ Tue, 09 Feb 2021 15:52:24: #3 In the peak calling step, the following will be performed simultaneously: 
+INFO  @ Tue, 09 Feb 2021 15:52:24: #3   Write bedGraph files for treatment pileup (after scaling if necessary)... H3K27ac_PVH_ExptF_H3K27ac_PVH_ExptF_AllCellrangerFragments_treat_pileup.bdg 
+INFO  @ Tue, 09 Feb 2021 15:52:24: #3   Write bedGraph files for control lambda (after scaling if necessary)... H3K27ac_PVH_ExptF_H3K27ac_PVH_ExptF_AllCellrangerFragments_control_lambda.bdg 
+INFO  @ Tue, 09 Feb 2021 15:52:24: #3 Call peaks for each chromosome... 
+INFO  @ Tue, 09 Feb 2021 15:54:08: #4 Write output xls file... /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/macs2/BinClusters/broad/H3K27ac_PVH_ExptF_H3K27ac_PVH_ExptF_AllCellrangerFragments_peaks.xls 
+INFO  @ Tue, 09 Feb 2021 15:54:09: #4 Write broad peak in broadPeak format file... /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/macs2/BinClusters/broad/H3K27ac_PVH_ExptF_H3K27ac_PVH_ExptF_AllCellrangerFragments_peaks.broadPeak 
+INFO  @ Tue, 09 Feb 2021 15:54:09: #4 Write broad peak in bed12/gappedPeak format file... /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/macs2/BinClusters/broad/H3K27ac_PVH_ExptF_H3K27ac_PVH_ExptF_AllCellrangerFragments_peaks.gappedPeak 
+INFO  @ Tue, 09 Feb 2021 15:54:09: Done! 
++ for i in '$projPath/bam/${ExptName}_FilteredCells.bam'
++ clusterName=H3K27ac_PVH_ExptF_AllCellrangerFragments
++ macs2 callpeak -t /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_FilteredCells.bam -g mm -f BAMPE -n H3K27ac_PVH_ExptF_H3K27ac_PVH_ExptF_AllCellrangerFragments --outdir /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/macs2/BinClusters/narrow -q 0.01 -B --SPMR --keep-dup=1
+INFO  @ Tue, 09 Feb 2021 15:54:10: 
+# Command line: callpeak -t /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_FilteredCells.bam -g mm -f BAMPE -n H3K27ac_PVH_ExptF_H3K27ac_PVH_ExptF_AllCellrangerFragments --outdir /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/macs2/BinClusters/narrow -q 0.01 -B --SPMR --keep-dup=1
+# ARGUMENTS LIST:
+# name = H3K27ac_PVH_ExptF_H3K27ac_PVH_ExptF_AllCellrangerFragments
+# format = BAMPE
+# ChIP-seq file = ['/nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_FilteredCells.bam']
+# control file = None
+# effective genome size = 1.87e+09
+# band width = 300
+# model fold = [5, 50]
+# qvalue cutoff = 1.00e-02
+# The maximum gap between significant sites is assigned as the read length/tag size.
+# The minimum length of peaks is assigned as the predicted fragment length "d".
+# Larger dataset will be scaled towards smaller dataset.
+# Range for calculating regional lambda is: 10000 bps
+# Broad region calling is off
+# Paired-End mode is on
+# MACS will save fragment pileup signal per million reads
+ 
+INFO  @ Tue, 09 Feb 2021 15:54:10: #1 read fragment files... 
+INFO  @ Tue, 09 Feb 2021 15:54:10: #1 read treatment fragments... 
+INFO  @ Tue, 09 Feb 2021 15:54:15:  1000000 
+INFO  @ Tue, 09 Feb 2021 15:54:19:  2000000 
+INFO  @ Tue, 09 Feb 2021 15:54:24:  3000000 
+INFO  @ Tue, 09 Feb 2021 15:54:29:  4000000 
+INFO  @ Tue, 09 Feb 2021 15:54:34:  5000000 
+INFO  @ Tue, 09 Feb 2021 15:54:39:  6000000 
+INFO  @ Tue, 09 Feb 2021 15:54:43:  7000000 
+INFO  @ Tue, 09 Feb 2021 15:54:44: 7183635 fragments have been read. 
+INFO  @ Tue, 09 Feb 2021 15:54:47: #1 mean fragment size is determined as 245.5 bp from treatment 
+INFO  @ Tue, 09 Feb 2021 15:54:47: #1 fragment size = 245.5 
+INFO  @ Tue, 09 Feb 2021 15:54:47: #1  total fragments in treatment: 7183635 
+INFO  @ Tue, 09 Feb 2021 15:54:47: #1 user defined the maximum fragments... 
+INFO  @ Tue, 09 Feb 2021 15:54:47: #1 filter out redundant fragments by allowing at most 1 identical fragment(s) 
+INFO  @ Tue, 09 Feb 2021 15:54:58: #1  fragments after filtering in treatment: 7141871 
+INFO  @ Tue, 09 Feb 2021 15:54:58: #1  Redundant rate of treatment: 0.01 
+INFO  @ Tue, 09 Feb 2021 15:54:58: #1 finished! 
+INFO  @ Tue, 09 Feb 2021 15:54:58: #2 Build Peak Model... 
+INFO  @ Tue, 09 Feb 2021 15:54:58: #2 Skipped... 
+INFO  @ Tue, 09 Feb 2021 15:54:58: #3 Call peaks... 
+INFO  @ Tue, 09 Feb 2021 15:54:58: #3 Pre-compute pvalue-qvalue table... 
+INFO  @ Tue, 09 Feb 2021 15:55:21: #3 In the peak calling step, the following will be performed simultaneously: 
+INFO  @ Tue, 09 Feb 2021 15:55:21: #3   Write bedGraph files for treatment pileup (after scaling if necessary)... H3K27ac_PVH_ExptF_H3K27ac_PVH_ExptF_AllCellrangerFragments_treat_pileup.bdg 
+INFO  @ Tue, 09 Feb 2021 15:55:21: #3   Write bedGraph files for control lambda (after scaling if necessary)... H3K27ac_PVH_ExptF_H3K27ac_PVH_ExptF_AllCellrangerFragments_control_lambda.bdg 
+INFO  @ Tue, 09 Feb 2021 15:55:21: #3   --SPMR is requested, so pileup will be normalized by sequencing depth in million reads. 
+INFO  @ Tue, 09 Feb 2021 15:55:21: #3 Call peaks for each chromosome... 
+INFO  @ Tue, 09 Feb 2021 15:56:23: #4 Write output xls file... /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/macs2/BinClusters/narrow/H3K27ac_PVH_ExptF_H3K27ac_PVH_ExptF_AllCellrangerFragments_peaks.xls 
+INFO  @ Tue, 09 Feb 2021 15:56:23: #4 Write peak in narrowPeak format file... /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/macs2/BinClusters/narrow/H3K27ac_PVH_ExptF_H3K27ac_PVH_ExptF_AllCellrangerFragments_peaks.narrowPeak 
+INFO  @ Tue, 09 Feb 2021 15:56:23: #4 Write summits bed file... /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/macs2/BinClusters/narrow/H3K27ac_PVH_ExptF_H3K27ac_PVH_ExptF_AllCellrangerFragments_summits.bed 
+INFO  @ Tue, 09 Feb 2021 15:56:23: Done! 
++ macs2 callpeak -t /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_FilteredCells.bam -g mm -f BAMPE -n H3K27ac_PVH_ExptF_H3K27ac_PVH_ExptF_AllCellrangerFragments --outdir /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/macs2/BinClusters/broad -q 0.01 -B --SPMR --keep-dup=1 --broad-cutoff=0.1 --broad
+INFO  @ Tue, 09 Feb 2021 15:56:24: 
+# Command line: callpeak -t /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_FilteredCells.bam -g mm -f BAMPE -n H3K27ac_PVH_ExptF_H3K27ac_PVH_ExptF_AllCellrangerFragments --outdir /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/macs2/BinClusters/broad -q 0.01 -B --SPMR --keep-dup=1 --broad-cutoff=0.1 --broad
+# ARGUMENTS LIST:
+# name = H3K27ac_PVH_ExptF_H3K27ac_PVH_ExptF_AllCellrangerFragments
+# format = BAMPE
+# ChIP-seq file = ['/nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_FilteredCells.bam']
+# control file = None
+# effective genome size = 1.87e+09
+# band width = 300
+# model fold = [5, 50]
+# qvalue cutoff for narrow/strong regions = 1.00e-02
+# qvalue cutoff for broad/weak regions = 1.00e-01
+# The maximum gap between significant sites is assigned as the read length/tag size.
+# The minimum length of peaks is assigned as the predicted fragment length "d".
+# Larger dataset will be scaled towards smaller dataset.
+# Range for calculating regional lambda is: 10000 bps
+# Broad region calling is on
+# Paired-End mode is on
+# MACS will save fragment pileup signal per million reads
+ 
+INFO  @ Tue, 09 Feb 2021 15:56:24: #1 read fragment files... 
+INFO  @ Tue, 09 Feb 2021 15:56:24: #1 read treatment fragments... 
+INFO  @ Tue, 09 Feb 2021 15:56:29:  1000000 
+INFO  @ Tue, 09 Feb 2021 15:56:34:  2000000 
+INFO  @ Tue, 09 Feb 2021 15:56:40:  3000000 
+INFO  @ Tue, 09 Feb 2021 15:56:45:  4000000 
+INFO  @ Tue, 09 Feb 2021 15:56:50:  5000000 
+INFO  @ Tue, 09 Feb 2021 15:56:54:  6000000 
+INFO  @ Tue, 09 Feb 2021 15:56:59:  7000000 
+INFO  @ Tue, 09 Feb 2021 15:57:00: 7183635 fragments have been read. 
+INFO  @ Tue, 09 Feb 2021 15:57:03: #1 mean fragment size is determined as 245.5 bp from treatment 
+INFO  @ Tue, 09 Feb 2021 15:57:03: #1 fragment size = 245.5 
+INFO  @ Tue, 09 Feb 2021 15:57:03: #1  total fragments in treatment: 7183635 
+INFO  @ Tue, 09 Feb 2021 15:57:03: #1 user defined the maximum fragments... 
+INFO  @ Tue, 09 Feb 2021 15:57:03: #1 filter out redundant fragments by allowing at most 1 identical fragment(s) 
+INFO  @ Tue, 09 Feb 2021 15:57:13: #1  fragments after filtering in treatment: 7141871 
+INFO  @ Tue, 09 Feb 2021 15:57:13: #1  Redundant rate of treatment: 0.01 
+INFO  @ Tue, 09 Feb 2021 15:57:13: #1 finished! 
+INFO  @ Tue, 09 Feb 2021 15:57:13: #2 Build Peak Model... 
+INFO  @ Tue, 09 Feb 2021 15:57:13: #2 Skipped... 
+INFO  @ Tue, 09 Feb 2021 15:57:13: #3 Call peaks... 
+INFO  @ Tue, 09 Feb 2021 15:57:13: #3 Call broad peaks with given level1 -log10qvalue cutoff and level2: 2.000000, 1.000000... 
+INFO  @ Tue, 09 Feb 2021 15:57:13: #3 Pre-compute pvalue-qvalue table... 
+INFO  @ Tue, 09 Feb 2021 15:57:36: #3 In the peak calling step, the following will be performed simultaneously: 
+INFO  @ Tue, 09 Feb 2021 15:57:36: #3   Write bedGraph files for treatment pileup (after scaling if necessary)... H3K27ac_PVH_ExptF_H3K27ac_PVH_ExptF_AllCellrangerFragments_treat_pileup.bdg 
+INFO  @ Tue, 09 Feb 2021 15:57:36: #3   Write bedGraph files for control lambda (after scaling if necessary)... H3K27ac_PVH_ExptF_H3K27ac_PVH_ExptF_AllCellrangerFragments_control_lambda.bdg 
+INFO  @ Tue, 09 Feb 2021 15:57:36: #3 Call peaks for each chromosome... 
+INFO  @ Tue, 09 Feb 2021 15:58:44: #4 Write output xls file... /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/macs2/BinClusters/broad/H3K27ac_PVH_ExptF_H3K27ac_PVH_ExptF_AllCellrangerFragments_peaks.xls 
+INFO  @ Tue, 09 Feb 2021 15:58:44: #4 Write broad peak in broadPeak format file... /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/macs2/BinClusters/broad/H3K27ac_PVH_ExptF_H3K27ac_PVH_ExptF_AllCellrangerFragments_peaks.broadPeak 
+INFO  @ Tue, 09 Feb 2021 15:58:44: #4 Write broad peak in bed12/gappedPeak format file... /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/macs2/BinClusters/broad/H3K27ac_PVH_ExptF_H3K27ac_PVH_ExptF_AllCellrangerFragments_peaks.gappedPeak 
+INFO  @ Tue, 09 Feb 2021 15:58:45: Done! 
++ module load samtools
+++ /usr/bin/modulecmd bash load samtools
++ eval PATH=/tools/samtools/1.9/bin/:/tools/anaconda/envs/jph712/cutNtag/bin:/tools/bedtools/2.27.1/bin:/tools/samtools/1.9/bin:/tools/liftOver/v1:/tools/bgen-tools/20190814/apps:/tools/qctoolv2/20190814:/tools/gdal/2.4.2/bin:/tools/star/2.7.3a:/tools/dropest/0.7.6:/tools/bamtools/2.5.1/bin:/tools/sratoolkit/2.8.2/bin:/tools/kentUtils/22Oct2014/bin/linux.x86_64:/tools/bowtie/2.3.4:/tools/bedtools/2.27.1/bin:/tools/htslib/1.6/bin:/tools/bcftools/1.6/bin:/tools/samtools/1.9/bin:/tools/salmon/0.8.2/bin:/tools/cellranger/4.0.0:/raid5/tools/fastqc/0.11.5:/tools/plink/2.0.0.0:/tools/git/2.29.2/bin:/tools/zlib/1.2.11/bin:/tools/hdf5/1.10.5/bin:/tools/R/4.0.2/bin:/tools/perslab:/tools/utop:/tools/tmux/2.9/bin:/tools/gcc/10.13.0/bin:/tools/tmux/2.5/bin:/tools/anaconda/latest/bin:/tools/anaconda/latest/condabin:/tools/liftOver/v1:/tools/bgen-tools/20190814/apps:/tools/qctoolv2/20190814:/tools/gdal/2.4.2/bin:/tools/star/2.7.3a:/tools/dropest/0.7.6:/tools/bamtools/2.5.1/bin:/tools/sratoolkit/2.8.2/bin:/tools/kentUtils/22Oct2014/bin/linux.x86_64:/tools/bowtie/2.3.4:/tools/bedtools/2.27.1/bin:/tools/htslib/1.6/bin:/tools/bcftools/1.6/bin:/tools/samtools/1.9/bin:/tools/salmon/0.8.2/bin:/tools/cellranger/4.0.0:/tools/bcl2fastq/2.20.0/bin:/raid5/tools/fastqc/0.11.5:/tools/plink/2.0.0.0:/tools/anaconda/latest/bin:/tools/R/4.0.2/bin:/tools/perslab:/tools/parallel/20200122/bin:/tools/utop:/tools/tmux/2.9/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/cbmr/jph712/.local/bin:/home/cbmr/jph712/bin:/home/cbmr/jph712/.local/bin:/home/cbmr/jph712/bin ';export' 'PATH;'
+++ PATH=/tools/samtools/1.9/bin/:/tools/anaconda/envs/jph712/cutNtag/bin:/tools/bedtools/2.27.1/bin:/tools/samtools/1.9/bin:/tools/liftOver/v1:/tools/bgen-tools/20190814/apps:/tools/qctoolv2/20190814:/tools/gdal/2.4.2/bin:/tools/star/2.7.3a:/tools/dropest/0.7.6:/tools/bamtools/2.5.1/bin:/tools/sratoolkit/2.8.2/bin:/tools/kentUtils/22Oct2014/bin/linux.x86_64:/tools/bowtie/2.3.4:/tools/bedtools/2.27.1/bin:/tools/htslib/1.6/bin:/tools/bcftools/1.6/bin:/tools/samtools/1.9/bin:/tools/salmon/0.8.2/bin:/tools/cellranger/4.0.0:/raid5/tools/fastqc/0.11.5:/tools/plink/2.0.0.0:/tools/git/2.29.2/bin:/tools/zlib/1.2.11/bin:/tools/hdf5/1.10.5/bin:/tools/R/4.0.2/bin:/tools/perslab:/tools/utop:/tools/tmux/2.9/bin:/tools/gcc/10.13.0/bin:/tools/tmux/2.5/bin:/tools/anaconda/latest/bin:/tools/anaconda/latest/condabin:/tools/liftOver/v1:/tools/bgen-tools/20190814/apps:/tools/qctoolv2/20190814:/tools/gdal/2.4.2/bin:/tools/star/2.7.3a:/tools/dropest/0.7.6:/tools/bamtools/2.5.1/bin:/tools/sratoolkit/2.8.2/bin:/tools/kentUtils/22Oct2014/bin/linux.x86_64:/tools/bowtie/2.3.4:/tools/bedtools/2.27.1/bin:/tools/htslib/1.6/bin:/tools/bcftools/1.6/bin:/tools/samtools/1.9/bin:/tools/salmon/0.8.2/bin:/tools/cellranger/4.0.0:/tools/bcl2fastq/2.20.0/bin:/raid5/tools/fastqc/0.11.5:/tools/plink/2.0.0.0:/tools/anaconda/latest/bin:/tools/R/4.0.2/bin:/tools/perslab:/tools/parallel/20200122/bin:/tools/utop:/tools/tmux/2.9/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/cbmr/jph712/.local/bin:/home/cbmr/jph712/bin:/home/cbmr/jph712/.local/bin:/home/cbmr/jph712/bin
+++ export PATH
++ module load bedtools
+++ /usr/bin/modulecmd bash load bedtools
++ eval PATH=/tools/bedtools/2.27.1/bin/:/tools/samtools/1.9/bin/:/tools/anaconda/envs/jph712/cutNtag/bin:/tools/bedtools/2.27.1/bin:/tools/samtools/1.9/bin:/tools/liftOver/v1:/tools/bgen-tools/20190814/apps:/tools/qctoolv2/20190814:/tools/gdal/2.4.2/bin:/tools/star/2.7.3a:/tools/dropest/0.7.6:/tools/bamtools/2.5.1/bin:/tools/sratoolkit/2.8.2/bin:/tools/kentUtils/22Oct2014/bin/linux.x86_64:/tools/bowtie/2.3.4:/tools/bedtools/2.27.1/bin:/tools/htslib/1.6/bin:/tools/bcftools/1.6/bin:/tools/samtools/1.9/bin:/tools/salmon/0.8.2/bin:/tools/cellranger/4.0.0:/raid5/tools/fastqc/0.11.5:/tools/plink/2.0.0.0:/tools/git/2.29.2/bin:/tools/zlib/1.2.11/bin:/tools/hdf5/1.10.5/bin:/tools/R/4.0.2/bin:/tools/perslab:/tools/utop:/tools/tmux/2.9/bin:/tools/gcc/10.13.0/bin:/tools/tmux/2.5/bin:/tools/anaconda/latest/bin:/tools/anaconda/latest/condabin:/tools/liftOver/v1:/tools/bgen-tools/20190814/apps:/tools/qctoolv2/20190814:/tools/gdal/2.4.2/bin:/tools/star/2.7.3a:/tools/dropest/0.7.6:/tools/bamtools/2.5.1/bin:/tools/sratoolkit/2.8.2/bin:/tools/kentUtils/22Oct2014/bin/linux.x86_64:/tools/bowtie/2.3.4:/tools/bedtools/2.27.1/bin:/tools/htslib/1.6/bin:/tools/bcftools/1.6/bin:/tools/samtools/1.9/bin:/tools/salmon/0.8.2/bin:/tools/cellranger/4.0.0:/tools/bcl2fastq/2.20.0/bin:/raid5/tools/fastqc/0.11.5:/tools/plink/2.0.0.0:/tools/anaconda/latest/bin:/tools/R/4.0.2/bin:/tools/perslab:/tools/parallel/20200122/bin:/tools/utop:/tools/tmux/2.9/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/cbmr/jph712/.local/bin:/home/cbmr/jph712/bin:/home/cbmr/jph712/.local/bin:/home/cbmr/jph712/bin ';export' 'PATH;'
+++ PATH=/tools/bedtools/2.27.1/bin/:/tools/samtools/1.9/bin/:/tools/anaconda/envs/jph712/cutNtag/bin:/tools/bedtools/2.27.1/bin:/tools/samtools/1.9/bin:/tools/liftOver/v1:/tools/bgen-tools/20190814/apps:/tools/qctoolv2/20190814:/tools/gdal/2.4.2/bin:/tools/star/2.7.3a:/tools/dropest/0.7.6:/tools/bamtools/2.5.1/bin:/tools/sratoolkit/2.8.2/bin:/tools/kentUtils/22Oct2014/bin/linux.x86_64:/tools/bowtie/2.3.4:/tools/bedtools/2.27.1/bin:/tools/htslib/1.6/bin:/tools/bcftools/1.6/bin:/tools/samtools/1.9/bin:/tools/salmon/0.8.2/bin:/tools/cellranger/4.0.0:/raid5/tools/fastqc/0.11.5:/tools/plink/2.0.0.0:/tools/git/2.29.2/bin:/tools/zlib/1.2.11/bin:/tools/hdf5/1.10.5/bin:/tools/R/4.0.2/bin:/tools/perslab:/tools/utop:/tools/tmux/2.9/bin:/tools/gcc/10.13.0/bin:/tools/tmux/2.5/bin:/tools/anaconda/latest/bin:/tools/anaconda/latest/condabin:/tools/liftOver/v1:/tools/bgen-tools/20190814/apps:/tools/qctoolv2/20190814:/tools/gdal/2.4.2/bin:/tools/star/2.7.3a:/tools/dropest/0.7.6:/tools/bamtools/2.5.1/bin:/tools/sratoolkit/2.8.2/bin:/tools/kentUtils/22Oct2014/bin/linux.x86_64:/tools/bowtie/2.3.4:/tools/bedtools/2.27.1/bin:/tools/htslib/1.6/bin:/tools/bcftools/1.6/bin:/tools/samtools/1.9/bin:/tools/salmon/0.8.2/bin:/tools/cellranger/4.0.0:/tools/bcl2fastq/2.20.0/bin:/raid5/tools/fastqc/0.11.5:/tools/plink/2.0.0.0:/tools/anaconda/latest/bin:/tools/R/4.0.2/bin:/tools/perslab:/tools/parallel/20200122/bin:/tools/utop:/tools/tmux/2.9/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/cbmr/jph712/.local/bin:/home/cbmr/jph712/bin:/home/cbmr/jph712/.local/bin:/home/cbmr/jph712/bin
+++ export PATH
++ genome=/home/cbmr/jph712/projects/CUTnTag/H3K27ac_ARC_scCUTnTAG_A/SEACR/tools/mm10GenomeSize.txt
++ SEACR=/projects/jph712/CUTnTag/H3K27ac_VMH_bulk/SEACR/SEACR_1.3.sh
++ mkdir /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/seacr -p
++ mkdir /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/seacr/bed -p
++ mkdir /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/seacr/tmpBAM -p
++ for i in '$projPath/bam/${ExptName}_FilteredCells.bam' '${projPath}/bam/${ExptName}_AllCellrangerFragments.bam'
++ pathName=/nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_FilteredCells
++ clusterName=H3K27ac_PVH_ExptF_FilteredCells
++ samtools view -b -@ 30 -f 2 -F 1804 /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_FilteredCells.bam
++ samtools sort /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/seacr/tmpBAM/H3K27ac_PVH_ExptF_FilteredCells_nodup.bam
+[bam_sort_core] merging from 6 files and 1 in-memory blocks...
++ samtools index /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/seacr/tmpBAM/H3K27ac_PVH_ExptF_FilteredCells.sorted.bam
++ bedtools genomecov -bg -pc -ibam /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/seacr/tmpBAM/H3K27ac_PVH_ExptF_FilteredCells.sorted.bam
++ /projects/jph712/CUTnTag/H3K27ac_VMH_bulk/SEACR/SEACR_1.3.sh /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/seacr/bed/H3K27ac_PVH_ExptF_FilteredCells.fragments.bedgraph 0.1 norm stringent /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/seacr/H3K27ac_PVH_ExptF_FilteredCells_SEACRpeaks_stringentTop0.1peaks.bed
+Calling enriched regions without control file
+Normalizing control to experimental bedgraph
+Using stringent threshold
+Creating experimental AUC file: Tue Feb  9 16:14:31 CET 2021
+Calculating optimal AUC threshold: Tue Feb  9 16:14:53 CET 2021
+Using user-provided threshold: Tue Feb  9 16:14:53 CET 2021
+During startup - Warning message:
+Setting LC_CTYPE failed, using "C" 
+Creating thresholded feature file: Tue Feb  9 16:14:55 CET 2021
+Empirical false discovery rate = 0.1
+Merging nearby features and eliminating control-enriched features: Tue Feb  9 16:14:57 CET 2021
+Removing temporary files: Tue Feb  9 16:14:58 CET 2021
+Done: Tue Feb  9 16:14:58 CET 2021
++ /projects/jph712/CUTnTag/H3K27ac_VMH_bulk/SEACR/SEACR_1.3.sh /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/seacr/bed/H3K27ac_PVH_ExptF_FilteredCells.fragments.bedgraph 0.01 norm stringent /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/seacr/H3K27ac_PVH_ExptF_FilteredCells_SEACRpeaks_stringentTop0.01peaks.bed
+Calling enriched regions without control file
+Normalizing control to experimental bedgraph
+Using stringent threshold
+Creating experimental AUC file: Tue Feb  9 16:14:58 CET 2021
+Calculating optimal AUC threshold: Tue Feb  9 16:15:23 CET 2021
+Using user-provided threshold: Tue Feb  9 16:15:23 CET 2021
+During startup - Warning message:
+Setting LC_CTYPE failed, using "C" 
+Creating thresholded feature file: Tue Feb  9 16:15:25 CET 2021
+Empirical false discovery rate = 0.01
+Merging nearby features and eliminating control-enriched features: Tue Feb  9 16:15:26 CET 2021
+Removing temporary files: Tue Feb  9 16:15:26 CET 2021
+Done: Tue Feb  9 16:15:26 CET 2021
++ /projects/jph712/CUTnTag/H3K27ac_VMH_bulk/SEACR/SEACR_1.3.sh /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/seacr/bed/H3K27ac_PVH_ExptF_FilteredCells.fragments.bedgraph 0.001 norm stringent /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/seacr/H3K27ac_PVH_ExptF_FilteredCells_SEACRpeaks_stringentTop0.001peaks.bed
+Calling enriched regions without control file
+Normalizing control to experimental bedgraph
+Using stringent threshold
+Creating experimental AUC file: Tue Feb  9 16:15:26 CET 2021
+Calculating optimal AUC threshold: Tue Feb  9 16:15:49 CET 2021
+Using user-provided threshold: Tue Feb  9 16:15:49 CET 2021
+During startup - Warning message:
+Setting LC_CTYPE failed, using "C" 
+Creating thresholded feature file: Tue Feb  9 16:15:51 CET 2021
+Empirical false discovery rate = 0.001
+Merging nearby features and eliminating control-enriched features: Tue Feb  9 16:15:52 CET 2021
+Removing temporary files: Tue Feb  9 16:15:52 CET 2021
+Done: Tue Feb  9 16:15:52 CET 2021
++ /projects/jph712/CUTnTag/H3K27ac_VMH_bulk/SEACR/SEACR_1.3.sh /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/seacr/bed/H3K27ac_PVH_ExptF_FilteredCells.fragments.bedgraph 0.001 norm relaxed /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/seacr/H3K27ac_PVH_ExptF_FilteredCells_SEACRpeaks_relaxedPeaks.bed
+Calling enriched regions without control file
+Normalizing control to experimental bedgraph
+Using relaxed threshold
+Creating experimental AUC file: Tue Feb  9 16:15:52 CET 2021
+Calculating optimal AUC threshold: Tue Feb  9 16:16:15 CET 2021
+Using user-provided threshold: Tue Feb  9 16:16:15 CET 2021
+During startup - Warning message:
+Setting LC_CTYPE failed, using "C" 
+Creating thresholded feature file: Tue Feb  9 16:16:17 CET 2021
+Empirical false discovery rate = 
+Merging nearby features and eliminating control-enriched features: Tue Feb  9 16:16:29 CET 2021
+Removing temporary files: Tue Feb  9 16:16:44 CET 2021
+Done: Tue Feb  9 16:16:44 CET 2021
++ for i in '$projPath/bam/${ExptName}_FilteredCells.bam' '${projPath}/bam/${ExptName}_AllCellrangerFragments.bam'
++ pathName=/nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_AllCellrangerFragments
++ clusterName=H3K27ac_PVH_ExptF_AllCellrangerFragments
++ samtools view -b -@ 30 -f 2 -F 1804 /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/bam/H3K27ac_PVH_ExptF_AllCellrangerFragments.bam
++ samtools sort /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/seacr/tmpBAM/H3K27ac_PVH_ExptF_AllCellrangerFragments_nodup.bam
+[bam_sort_core] merging from 11 files and 1 in-memory blocks...
++ samtools index /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/seacr/tmpBAM/H3K27ac_PVH_ExptF_AllCellrangerFragments.sorted.bam
++ bedtools genomecov -bg -pc -ibam /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/seacr/tmpBAM/H3K27ac_PVH_ExptF_AllCellrangerFragments.sorted.bam
++ /projects/jph712/CUTnTag/H3K27ac_VMH_bulk/SEACR/SEACR_1.3.sh /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/seacr/bed/H3K27ac_PVH_ExptF_AllCellrangerFragments.fragments.bedgraph 0.1 norm stringent /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/seacr/H3K27ac_PVH_ExptF_AllCellrangerFragments_SEACRpeaks_stringentTop0.1peaks.bed
+Calling enriched regions without control file
+Normalizing control to experimental bedgraph
+Using stringent threshold
+Creating experimental AUC file: Tue Feb  9 17:27:08 CET 2021
+Calculating optimal AUC threshold: Tue Feb  9 17:27:48 CET 2021
+Using user-provided threshold: Tue Feb  9 17:27:48 CET 2021
+During startup - Warning message:
+Setting LC_CTYPE failed, using "C" 
+Creating thresholded feature file: Tue Feb  9 17:27:52 CET 2021
+Empirical false discovery rate = 0.1
+Merging nearby features and eliminating control-enriched features: Tue Feb  9 17:27:55 CET 2021
+Removing temporary files: Tue Feb  9 17:27:57 CET 2021
+Done: Tue Feb  9 17:27:57 CET 2021
++ /projects/jph712/CUTnTag/H3K27ac_VMH_bulk/SEACR/SEACR_1.3.sh /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/seacr/bed/H3K27ac_PVH_ExptF_AllCellrangerFragments.fragments.bedgraph 0.01 norm stringent /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/seacr/H3K27ac_PVH_ExptF_AllCellrangerFragments_SEACRpeaks_stringentTop0.01peaks.bed
+Calling enriched regions without control file
+Normalizing control to experimental bedgraph
+Using stringent threshold
+Creating experimental AUC file: Tue Feb  9 17:27:57 CET 2021
+Calculating optimal AUC threshold: Tue Feb  9 17:28:36 CET 2021
+Using user-provided threshold: Tue Feb  9 17:28:36 CET 2021
+During startup - Warning message:
+Setting LC_CTYPE failed, using "C" 
+Creating thresholded feature file: Tue Feb  9 17:28:39 CET 2021
+Empirical false discovery rate = 0.01
+Merging nearby features and eliminating control-enriched features: Tue Feb  9 17:28:40 CET 2021
+Removing temporary files: Tue Feb  9 17:28:40 CET 2021
+Done: Tue Feb  9 17:28:41 CET 2021
++ /projects/jph712/CUTnTag/H3K27ac_VMH_bulk/SEACR/SEACR_1.3.sh /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/seacr/bed/H3K27ac_PVH_ExptF_AllCellrangerFragments.fragments.bedgraph 0.001 norm stringent /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/seacr/H3K27ac_PVH_ExptF_AllCellrangerFragments_SEACRpeaks_stringentTop0.001peaks.bed
+Calling enriched regions without control file
+Normalizing control to experimental bedgraph
+Using stringent threshold
+Creating experimental AUC file: Tue Feb  9 17:28:41 CET 2021
+Calculating optimal AUC threshold: Tue Feb  9 17:29:21 CET 2021
+Using user-provided threshold: Tue Feb  9 17:29:21 CET 2021
+During startup - Warning message:
+Setting LC_CTYPE failed, using "C" 
+Creating thresholded feature file: Tue Feb  9 17:29:24 CET 2021
+Empirical false discovery rate = 0.001
+Merging nearby features and eliminating control-enriched features: Tue Feb  9 17:29:26 CET 2021
+Removing temporary files: Tue Feb  9 17:29:26 CET 2021
+Done: Tue Feb  9 17:29:26 CET 2021
++ /projects/jph712/CUTnTag/H3K27ac_VMH_bulk/SEACR/SEACR_1.3.sh /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/seacr/bed/H3K27ac_PVH_ExptF_AllCellrangerFragments.fragments.bedgraph 0.001 norm relaxed /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF/seacr/H3K27ac_PVH_ExptF_AllCellrangerFragments_SEACRpeaks_relaxedPeaks.bed
+Calling enriched regions without control file
+Normalizing control to experimental bedgraph
+Using relaxed threshold
+Creating experimental AUC file: Tue Feb  9 17:29:26 CET 2021
+Calculating optimal AUC threshold: Tue Feb  9 17:30:04 CET 2021
+Using user-provided threshold: Tue Feb  9 17:30:04 CET 2021
+During startup - Warning message:
+Setting LC_CTYPE failed, using "C" 
+Creating thresholded feature file: Tue Feb  9 17:30:07 CET 2021
+Empirical false discovery rate = 
+Merging nearby features and eliminating control-enriched features: Tue Feb  9 17:30:22 CET 2021
+Removing temporary files: Tue Feb  9 17:30:38 CET 2021
+Done: Tue Feb  9 17:30:38 CET 2021
