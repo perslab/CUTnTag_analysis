@@ -1,0 +1,3 @@
+[submodule "hg38_anno"]
+	path = hg38_anno
+	url = git@github.com:kristianlichtenberg/hg38_anno.git
