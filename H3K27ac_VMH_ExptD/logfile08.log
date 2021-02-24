@@ -1,0 +1,377 @@
++ outsPath=/nfsdata/projects/oliver/SCOaaP/outs/SCOP_2020_0113/scATACseq/03_PipelineOut/201217_VMH-PVH/cellranger/EndoPool_1/outs
++ hashPath=/nfsdata/projects/oliver/SCOaaP/outs/SCOP_2020_0113/scATACseq/03_PipelineOut/201217_VMH-PVH/kite/HashPool_1/featurecounts
++ projPath=/nfsdata/projects/jph712/cutntag_analysis/H3K27ac_VMH_ExptD
++ ExptName=H3K27ac_VMH_ExptD
++ nproc=20
++ GRCm38=2652783500
++ blacklist_mm10=/projects/jph712/CUTnTag/H3K27ac_ARC_scCUTnTAG_B/deepTools/mm10-blacklist.v2.bed
++ cd /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_VMH_ExptD/bam
++ sinto filterbarcodes -b /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_VMH_ExptD/bam/H3K27ac_VMH_ExptD_AllCellrangerFragments.bam -p 20 -c /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_VMH_ExptD/bam/FilteredCellBarcodes_PeakClusters.tsv
+Function run_filterbarcodes called with the following arguments:
+
+bam	/nfsdata/projects/jph712/cutntag_analysis/H3K27ac_VMH_ExptD/bam/H3K27ac_VMH_ExptD_AllCellrangerFragments.bam
+cells	/nfsdata/projects/jph712/cutntag_analysis/H3K27ac_VMH_ExptD/bam/FilteredCellBarcodes_PeakClusters.tsv
+trim_suffix	False
+nproc	20
+barcode_regex	None
+barcodetag	CB
+func	<function run_filterbarcodes at 0x7f995600b670>
+
+Function completed in  1.0 m 56.57 s
+
++ for i in '${projPath}/bam/PeakCluster*.bam'
++ pathName=/nfsdata/projects/jph712/cutntag_analysis/H3K27ac_VMH_ExptD/bam/PeakCluster0
++ clusterName=PeakCluster0
++ samtools index /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_VMH_ExptD/bam/PeakCluster0.bam
++ bamCoverage --bam /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_VMH_ExptD/bam/PeakCluster0.bam --outFileName /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_VMH_ExptD/bigwig/PeakCluster0_nucFree.bigWig --outFileFormat bigwig --numberOfProcessors 20 --minFragmentLength 20 --maxFragmentLength 121 --blackListFileName /projects/jph712/CUTnTag/H3K27ac_ARC_scCUTnTAG_B/deepTools/mm10-blacklist.v2.bed -bs 1 --ignoreDuplicates --ignoreForNormalization chrX chrM --extendReads --normalizeUsing RPGC --effectiveGenomeSize 2652783500
+WARNING: The minimum distance between intervals in your blacklist is 0. It makes little biological sense to include small regions between two blacklisted regions. Instead, these should likely be blacklisted as well.
+There are 19741817 alignments, of which 1232573 are completely within a blacklist region.
+Due to filtering, 15.644738018847882% of the aforementioned alignments will be used 2895722.73306932
+normalization: 1x (effective genome size 2652783500)
+bamFilesList: ['/nfsdata/projects/jph712/cutntag_analysis/H3K27ac_VMH_ExptD/bam/PeakCluster0.bam']
+binLength: 1
+numberOfSamples: None
+blackListFileName: ['/projects/jph712/CUTnTag/H3K27ac_ARC_scCUTnTAG_B/deepTools/mm10-blacklist.v2.bed']
+skipZeroOverZero: False
+bed_and_bin: False
+genomeChunkSize: None
+defaultFragmentLength: 257
+numberOfProcessors: 20
+verbose: False
+region: None
+bedFile: None
+minMappingQuality: None
+ignoreDuplicates: True
+chrsToSkip: ['chrX', 'chrM']
+stepSize: 1
+center_read: False
+samFlag_include: None
+samFlag_exclude: None
+minFragmentLength: 20
+maxFragmentLength: 121
+zerosToNans: False
+smoothLength: None
+save_data: False
+out_file_for_raw_data: None
+maxPairedFragmentLength: 121
++ bamCoverage --bam /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_VMH_ExptD/bam/PeakCluster0.bam --outFileName /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_VMH_ExptD/bigwig/PeakCluster0_Nucleosomal.bigWig --outFileFormat bigwig --numberOfProcessors 20 --minFragmentLength 120 --maxFragmentLength 800 --blackListFileName /projects/jph712/CUTnTag/H3K27ac_ARC_scCUTnTAG_B/deepTools/mm10-blacklist.v2.bed -bs 1 --ignoreDuplicates --ignoreForNormalization chrX chrM --extendReads --normalizeUsing RPGC --effectiveGenomeSize 2652783500
+WARNING: The minimum distance between intervals in your blacklist is 0. It makes little biological sense to include small regions between two blacklisted regions. Instead, these should likely be blacklisted as well.
+There are 19741817 alignments, of which 1232573 are completely within a blacklist region.
+Due to filtering, 83.56158401618727% of the aforementioned alignments will be used 15466617.475821102
+normalization: 1x (effective genome size 2652783500)
+bamFilesList: ['/nfsdata/projects/jph712/cutntag_analysis/H3K27ac_VMH_ExptD/bam/PeakCluster0.bam']
+binLength: 1
+numberOfSamples: None
+blackListFileName: ['/projects/jph712/CUTnTag/H3K27ac_ARC_scCUTnTAG_B/deepTools/mm10-blacklist.v2.bed']
+skipZeroOverZero: False
+bed_and_bin: False
+genomeChunkSize: None
+defaultFragmentLength: 257
+numberOfProcessors: 20
+verbose: False
+region: None
+bedFile: None
+minMappingQuality: None
+ignoreDuplicates: True
+chrsToSkip: ['chrX', 'chrM']
+stepSize: 1
+center_read: False
+samFlag_include: None
+samFlag_exclude: None
+minFragmentLength: 120
+maxFragmentLength: 800
+zerosToNans: False
+smoothLength: None
+save_data: False
+out_file_for_raw_data: None
+maxPairedFragmentLength: 800
++ bamCoverage --bam /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_VMH_ExptD/bam/PeakCluster0.bam --outFileName /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_VMH_ExptD/bigwig/PeakCluster0_extendReads.bigWig --outFileFormat bigwig --numberOfProcessors 20 --minFragmentLength 20 --maxFragmentLength 800 --blackListFileName /projects/jph712/CUTnTag/H3K27ac_ARC_scCUTnTAG_B/deepTools/mm10-blacklist.v2.bed -bs 1 --ignoreDuplicates --ignoreForNormalization chrX chrM --extendReads --normalizeUsing RPGC --effectiveGenomeSize 2652783500
+WARNING: The minimum distance between intervals in your blacklist is 0. It makes little biological sense to include small regions between two blacklisted regions. Instead, these should likely be blacklisted as well.
+There are 19741817 alignments, of which 1232573 are completely within a blacklist region.
+Due to filtering, 99.06682839032787% of the aforementioned alignments will be used 18336520.98982706
+normalization: 1x (effective genome size 2652783500)
+bamFilesList: ['/nfsdata/projects/jph712/cutntag_analysis/H3K27ac_VMH_ExptD/bam/PeakCluster0.bam']
+binLength: 1
+numberOfSamples: None
+blackListFileName: ['/projects/jph712/CUTnTag/H3K27ac_ARC_scCUTnTAG_B/deepTools/mm10-blacklist.v2.bed']
+skipZeroOverZero: False
+bed_and_bin: False
+genomeChunkSize: None
+defaultFragmentLength: 257
+numberOfProcessors: 20
+verbose: False
+region: None
+bedFile: None
+minMappingQuality: None
+ignoreDuplicates: True
+chrsToSkip: ['chrX', 'chrM']
+stepSize: 1
+center_read: False
+samFlag_include: None
+samFlag_exclude: None
+minFragmentLength: 20
+maxFragmentLength: 800
+zerosToNans: False
+smoothLength: None
+save_data: False
+out_file_for_raw_data: None
+maxPairedFragmentLength: 800
++ for i in '${projPath}/bam/PeakCluster*.bam'
++ pathName=/nfsdata/projects/jph712/cutntag_analysis/H3K27ac_VMH_ExptD/bam/PeakCluster1
++ clusterName=PeakCluster1
++ samtools index /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_VMH_ExptD/bam/PeakCluster1.bam
++ bamCoverage --bam /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_VMH_ExptD/bam/PeakCluster1.bam --outFileName /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_VMH_ExptD/bigwig/PeakCluster1_nucFree.bigWig --outFileFormat bigwig --numberOfProcessors 20 --minFragmentLength 20 --maxFragmentLength 121 --blackListFileName /projects/jph712/CUTnTag/H3K27ac_ARC_scCUTnTAG_B/deepTools/mm10-blacklist.v2.bed -bs 1 --ignoreDuplicates --ignoreForNormalization chrX chrM --extendReads --normalizeUsing RPGC --effectiveGenomeSize 2652783500
+WARNING: The minimum distance between intervals in your blacklist is 0. It makes little biological sense to include small regions between two blacklisted regions. Instead, these should likely be blacklisted as well.
+There are 8361885 alignments, of which 542475 are completely within a blacklist region.
+Due to filtering, 15.624671960177672% of the aforementioned alignments will be used 1221757.161721329
+normalization: 1x (effective genome size 2652783500)
+bamFilesList: ['/nfsdata/projects/jph712/cutntag_analysis/H3K27ac_VMH_ExptD/bam/PeakCluster1.bam']
+binLength: 1
+numberOfSamples: None
+blackListFileName: ['/projects/jph712/CUTnTag/H3K27ac_ARC_scCUTnTAG_B/deepTools/mm10-blacklist.v2.bed']
+skipZeroOverZero: False
+bed_and_bin: False
+genomeChunkSize: None
+defaultFragmentLength: 252
+numberOfProcessors: 20
+verbose: False
+region: None
+bedFile: None
+minMappingQuality: None
+ignoreDuplicates: True
+chrsToSkip: ['chrX', 'chrM']
+stepSize: 1
+center_read: False
+samFlag_include: None
+samFlag_exclude: None
+minFragmentLength: 20
+maxFragmentLength: 121
+zerosToNans: False
+smoothLength: None
+save_data: False
+out_file_for_raw_data: None
+maxPairedFragmentLength: 121
++ bamCoverage --bam /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_VMH_ExptD/bam/PeakCluster1.bam --outFileName /nfsdata/projects/jph712/cutntag_analysis/H3K27ac_VMH_ExptD/bigwig/PeakCluster1_Nucleosomal.bigWig --outFileFormat bigwig --numberOfProcessors 20 --minFragmentLength 120 --maxFragmentLength 800 --blackListFileName /projects/jph712/CUTnTag/H3K27ac_ARC_scCUTnTAG_B/deepTools/mm10-blacklist.v2.bed -bs 1 --ignoreDuplicates --ignoreForNormalization chrX chrM --extendReads --normalizeUsing RPGC --effectiveGenomeSize 2652783500
+WARNING: The minimum distance between intervals in your blacklist is 0. It makes little biological sense to include small regions between two blacklisted regions. Instead, these should likely be blacklisted as well.
+There are 8361885 alignments, of which 542475 are completely within a blacklist region.
+Due to filtering, 83.52080183149391% of the aforementioned alignments will be used 6530833.930492017
+normalization: 1x (effective genome size 2652783500)
+bamFilesList: ['/nfsdata/projects/jph712/cutntag_analysis/H3K27ac_VMH_ExptD/bam/PeakCluster1.bam']
+binLength: 1
+numberOfSamples: None
+blackListFileName: ['/projects/jph712/CUTnTag/H3K27ac_ARC_scCUTnTAG_B/deepTools/mm10-blacklist.v2.bed']
+skipZeroOverZero: False
+bed_and_bin: False
+genomeChunkSize: None
+defaultFragmentLength: 252
+numberOfProcessors: 20
+verbose: False
+region: None
+bedFile: None
+minMappingQuality: None
+ignoreDuplicates: True
+chrsToSkip: ['chrX', 'chrM']
+stepSize: 1
+center_read: False
+samFlag_include: None
+samFlag_exclude: None
+minFragmentLength: 120
+maxFragmentLength: 800
+zerosToNans: False
+smoothLength: None
+save_data: False
+out_file_for_raw_data: None
+maxPairedFragmentLength: 800
+Process ForkPoolWorker-120:
+Traceback (most recent call last):
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/process.py", line 315, in _bootstrap
+    self.run()
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/pool.py", line 125, in worker
+    result = (True, func(*args, **kwds))
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/pool.py", line 48, in mapstar
+    return list(map(*args))
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/site-packages/deeptools/writeBedGraph.py", line 27, in writeBedGraph_wrapper
+    return WriteBedGraph.writeBedGraph_worker(*args)
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/site-packages/deeptools/writeBedGraph.py", line 266, in writeBedGraph_worker
+    writeEnd = min(writeEnd + self.binLength, end)
+KeyboardInterrupt
+Process ForkPoolWorker-102:
+Traceback (most recent call last):
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/process.py", line 315, in _bootstrap
+    self.run()
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/pool.py", line 125, in worker
+    result = (True, func(*args, **kwds))
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/pool.py", line 48, in mapstar
+    return list(map(*args))
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/site-packages/deeptools/writeBedGraph.py", line 27, in writeBedGraph_wrapper
+    return WriteBedGraph.writeBedGraph_worker(*args)
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/site-packages/deeptools/writeBedGraph.py", line 249, in writeBedGraph_worker
+    value = func_to_call(tileCoverage, func_args)
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/site-packages/deeptools/writeBedGraph.py", line 347, in scaleCoverage
+    return args['scaleFactor'] * tile_coverage[0]
+KeyboardInterrupt
+Process ForkPoolWorker-115:
+Traceback (most recent call last):
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/process.py", line 315, in _bootstrap
+    self.run()
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/pool.py", line 125, in worker
+    result = (True, func(*args, **kwds))
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/pool.py", line 48, in mapstar
+    return list(map(*args))
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/site-packages/deeptools/writeBedGraph.py", line 27, in writeBedGraph_wrapper
+    return WriteBedGraph.writeBedGraph_worker(*args)
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/site-packages/deeptools/writeBedGraph.py", line 266, in writeBedGraph_worker
+    writeEnd = min(writeEnd + self.binLength, end)
+KeyboardInterrupt
+Process ForkPoolWorker-111:
+Traceback (most recent call last):
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/process.py", line 315, in _bootstrap
+    self.run()
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/pool.py", line 125, in worker
+    result = (True, func(*args, **kwds))
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/pool.py", line 48, in mapstar
+    return list(map(*args))
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/site-packages/deeptools/writeBedGraph.py", line 27, in writeBedGraph_wrapper
+    return WriteBedGraph.writeBedGraph_worker(*args)
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/site-packages/deeptools/writeBedGraph.py", line 249, in writeBedGraph_worker
+    value = func_to_call(tileCoverage, func_args)
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/site-packages/deeptools/writeBedGraph.py", line 347, in scaleCoverage
+    return args['scaleFactor'] * tile_coverage[0]
+KeyboardInterrupt
+Process ForkPoolWorker-106:
+Traceback (most recent call last):
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/process.py", line 315, in _bootstrap
+    self.run()
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/pool.py", line 125, in worker
+    result = (True, func(*args, **kwds))
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/pool.py", line 48, in mapstar
+    return list(map(*args))
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/site-packages/deeptools/writeBedGraph.py", line 27, in writeBedGraph_wrapper
+    return WriteBedGraph.writeBedGraph_worker(*args)
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/site-packages/deeptools/writeBedGraph.py", line 249, in writeBedGraph_worker
+    value = func_to_call(tileCoverage, func_args)
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/site-packages/deeptools/writeBedGraph.py", line 347, in scaleCoverage
+    return args['scaleFactor'] * tile_coverage[0]
+KeyboardInterrupt
+Process ForkPoolWorker-116:
+Traceback (most recent call last):
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/process.py", line 315, in _bootstrap
+    self.run()
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/pool.py", line 125, in worker
+    result = (True, func(*args, **kwds))
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/pool.py", line 48, in mapstar
+    return list(map(*args))
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/site-packages/deeptools/writeBedGraph.py", line 27, in writeBedGraph_wrapper
+    return WriteBedGraph.writeBedGraph_worker(*args)
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/site-packages/deeptools/writeBedGraph.py", line 260, in writeBedGraph_worker
+    if previous_value is None:
+KeyboardInterrupt
+Process ForkPoolWorker-110:
+Traceback (most recent call last):
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/process.py", line 315, in _bootstrap
+    self.run()
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/pool.py", line 125, in worker
+    result = (True, func(*args, **kwds))
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/pool.py", line 48, in mapstar
+    return list(map(*args))
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/site-packages/deeptools/writeBedGraph.py", line 27, in writeBedGraph_wrapper
+    return WriteBedGraph.writeBedGraph_worker(*args)
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/site-packages/deeptools/writeBedGraph.py", line 249, in writeBedGraph_worker
+    value = func_to_call(tileCoverage, func_args)
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/site-packages/deeptools/writeBedGraph.py", line 347, in scaleCoverage
+    return args['scaleFactor'] * tile_coverage[0]
+KeyboardInterrupt
+Process ForkPoolWorker-101:
+Traceback (most recent call last):
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/process.py", line 315, in _bootstrap
+    self.run()
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/pool.py", line 125, in worker
+    result = (True, func(*args, **kwds))
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/pool.py", line 48, in mapstar
+    return list(map(*args))
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/site-packages/deeptools/writeBedGraph.py", line 27, in writeBedGraph_wrapper
+    return WriteBedGraph.writeBedGraph_worker(*args)
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/site-packages/deeptools/writeBedGraph.py", line 266, in writeBedGraph_worker
+    writeEnd = min(writeEnd + self.binLength, end)
+KeyboardInterrupt
+Process ForkPoolWorker-117:
+Traceback (most recent call last):
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/process.py", line 315, in _bootstrap
+    self.run()
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/pool.py", line 125, in worker
+    result = (True, func(*args, **kwds))
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/pool.py", line 48, in mapstar
+    return list(map(*args))
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/site-packages/deeptools/writeBedGraph.py", line 27, in writeBedGraph_wrapper
+    return WriteBedGraph.writeBedGraph_worker(*args)
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/site-packages/deeptools/writeBedGraph.py", line 266, in writeBedGraph_worker
+    writeEnd = min(writeEnd + self.binLength, end)
+KeyboardInterrupt
+Process ForkPoolWorker-105:
+Traceback (most recent call last):
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/process.py", line 315, in _bootstrap
+    self.run()
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/pool.py", line 125, in worker
+    result = (True, func(*args, **kwds))
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/pool.py", line 48, in mapstar
+    return list(map(*args))
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/site-packages/deeptools/writeBedGraph.py", line 27, in writeBedGraph_wrapper
+    return WriteBedGraph.writeBedGraph_worker(*args)
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/site-packages/deeptools/writeBedGraph.py", line 265, in writeBedGraph_worker
+    elif previous_value == value:
+KeyboardInterrupt
+Process ForkPoolWorker-114:
+Traceback (most recent call last):
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/process.py", line 315, in _bootstrap
+    self.run()
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/pool.py", line 125, in worker
+    result = (True, func(*args, **kwds))
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/pool.py", line 48, in mapstar
+    return list(map(*args))
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/site-packages/deeptools/writeBedGraph.py", line 27, in writeBedGraph_wrapper
+    return WriteBedGraph.writeBedGraph_worker(*args)
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/site-packages/deeptools/writeBedGraph.py", line 249, in writeBedGraph_worker
+    value = func_to_call(tileCoverage, func_args)
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/site-packages/deeptools/writeBedGraph.py", line 347, in scaleCoverage
+    return args['scaleFactor'] * tile_coverage[0]
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "/tools/anaconda/envs/jph712/cutNtag/bin/bamCoverage", line 12, in <module>
+    main(args)
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/site-packages/deeptools/bamCoverage.py", line 256, in main
+    wr.run(writeBedGraph.scaleCoverage, func_args, args.outFileName,
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/site-packages/deeptools/writeBedGraph.py", line 145, in run
+    res = mapReduce.mapReduce([func_to_call, func_args],
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/site-packages/deeptools/mapReduce.py", line 142, in mapReduce
+    res = pool.map_async(func, TASKS).get(9999999)
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/pool.py", line 765, in get
+    self.wait(timeout)
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/multiprocessing/pool.py", line 762, in wait
+    self._event.wait(timeout)
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/threading.py", line 558, in wait
+    signaled = self._cond.wait(timeout)
+  File "/tools/anaconda/envs/jph712/cutNtag/lib/python3.8/threading.py", line 306, in wait
+    gotit = waiter.acquire(True, timeout)
+KeyboardInterrupt
