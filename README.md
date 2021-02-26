@@ -15,3 +15,5 @@ I found it useful to invoke the scripts in this manner:
 
 `R -e "rmarkdown::render('03_demultiplex.Rmd',output_file='03_demultiplex.html')"`
 `bash -x 04_filteredCells_makeBAMmakeBWfindPeaks.sh &> logfile_04.log`
+
+[Link to write-up about cutNtag in general and some thoughts on it.](https://docs.google.com/document/d/14fgKkcWUS6FbOAhBeu6TpAHERR1h5MOPjP49Kbv4gmY/edit)
