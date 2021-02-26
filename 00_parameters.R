@@ -1,7 +1,7 @@
-outsPath="/projects/oliver/SCOaaP/outs/SCOP_2020_0113/scATACseq/03_PipelineOut/210128_ExptFG_ExptH/cellranger/EndoPool_1/outs"
-hashPath="/projects/oliver/SCOaaP/outs/SCOP_2020_0113/scATACseq/03_PipelineOut/210128_ExptFG_ExptH/kite/HashPool_1_rc/featurecounts"
-projPath="/nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF"
-ExptName="H3K27ac_PVH_ExptF"
+#outsPath="/projects/oliver/SCOaaP/outs/SCOP_2020_0113/scATACseq/03_PipelineOut/210128_ExptFG_ExptH/cellranger/EndoPool_1/outs"
+#hashPath="/projects/oliver/SCOaaP/outs/SCOP_2020_0113/scATACseq/03_PipelineOut/210128_ExptFG_ExptH/kite/HashPool_1_rc/featurecounts"
+#projPath="/nfsdata/projects/jph712/cutntag_analysis/H3K27ac_PVH_ExptF"
+ExptName="XYZ"
 
 #Set thresholds for experiment:
 set.seed(1234)
@@ -15,18 +15,17 @@ BinRes=1
 PeakRes=1
 
 nproc=30
-genome="hg38"
+genome="mm10"
 
 
 #Species specific parameters:
 ##mm10:
-# annotations<-readRDS("/nfsdata/projects/jph712/cutntag_analysis/mm10/EnsDb.Mmusculus.v79_getRangesAnnotation.RDS")
-# GenomeSeqlengths<-readRDS("/nfsdata/projects/jph712/cutntag_analysis/mm10/EnsDb.Mmusculus.v79_GenomeSeqlengths.RDS")
-# blacklist_file="/nfsdata/projects/jph712/cutntag_analysis/mm10/mm10-blacklist.v2.bed"
+annotations<-readRDS("/nfsdata/projects/jph712/cutntag_analysis/mm10_anno/EnsDb.Mmusculus.v79_getRangesAnnotation.RDS")
+GenomeSeqlengths<-readRDS("/nfsdata/projects/jph712/cutntag_analysis/mm10_anno/EnsDb.Mmusculus.v79_GenomeSeqlengths.RDS")
+blacklist_file="/nfsdata/projects/jph712/cutntag_analysis/mm10_anno/mm10-blacklist.v2.bed"
 
 ##hg38:
-annotations<-readRDS("/nfsdata/projects/jph712/cutntag_analysis/hg38/EnsDb.Hsapiens.v86_getRangesAnnotation.RDS")
-GenomeSeqlengths<-readRDS("/nfsdata/projects/jph712/cutntag_analysis/hg38/EnsDb.Hsapiens.v86_GenomeSeqlengths.RDS")
-blacklist_file="/nfsdata/projects/jph712/cutntag_analysis/hg38/hg38-blacklist.v2.bed"
-
+# annotations<-readRDS("/nfsdata/projects/jph712/cutntag_analysis/hg38_anno/EnsDb.Hsapiens.v86_getRangesAnnotation.RDS")
+# GenomeSeqlengths<-readRDS("/nfsdata/projects/jph712/cutntag_analysis/hg38_anno/EnsDb.Hsapiens.v86_GenomeSeqlengths.RDS")
+# blacklist_file="/nfsdata/projects/jph712/cutntag_analysis/hg38_anno/hg38-blacklist.v2.bed"
 

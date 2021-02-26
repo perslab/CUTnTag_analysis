@@ -147,7 +147,17 @@ dim(hto)
 
 
 ```
+```{r}
+metadata<- left_join(metadata, 
+                     colSums(hto_unf) %>%
+                       enframe(name="barcode", value="colSums_hto"))
 
+metadata %>%
+  filter(!is.na(colSums_hto))%>%
+  ggplot(., aes(passed_filters, colSums_hto, col=factor(is_cellranger_cell_barcode)))+geom_point(size=0.4)+
+  theme(legend.title = element_blank())+
+  scale_x_log10()+scale_y_log10() +ggtitle(paste0(ExptName))
+```
 
 
 #### Create seruat HTO object
