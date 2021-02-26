@@ -4,3 +4,6 @@
 [submodule "mm10_anno"]
 	path = mm10_anno
 	url = git@github.com:kristianlichtenberg/mm10_anno.git
+[submodule "scATAC_analysis"]
+	path = scATAC_analysis
+	url = git@github.com:kristianlichtenberg/scATAC_analysis.git
